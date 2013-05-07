@@ -1,0 +1,20 @@
+extends ../layouts/default
+
+block main
+  h1= technique.title
+
+block content
+  .row
+    .span9
+      p=technique.body
+      p.author
+        span Author :&nbsp;
+        span=technique.user.name
+      .date= formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
+      if (technique.tags)
+        .tags
+          | Tags :&nbsp;
+          each tag in technique.tags.split(',')
+            span.tag
+              i.icon-tags
+              |  #{tag}

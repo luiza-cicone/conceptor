@@ -1,0 +1,28 @@
+extends ../layouts/default
+
+block main
+  h1 Techniques
+
+block content
+  each technique in techniques
+    .technique
+      a.title(href='/techniques/'+technique._id, title=technique.title) #{technique.title}
+      p=technique.body
+      .author
+        span= formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
+        span &nbsp;| Author :&nbsp;
+        a(href="/users/"+technique.user._id)=technique.user.name
+        | &nbsp;|&nbsp;
+        if (technique.tags)
+          span.tags
+            span Tags :&nbsp;
+            each tag in technique.tags.split(',')
+              a.tag(href="/tags/"+tag)
+                i.icon-tags
+                |  #{tag}
+    hr
+
+  if (pages > 1)
+    .pagination
+      ul
+        != createPagination(pages, page)

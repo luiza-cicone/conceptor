@@ -1,0 +1,21 @@
+extends ../layouts/default
+
+block main
+  h1 Techniques for #{phase.title}
+
+block content
+  each technique in techniques
+    .technique
+      a.title(href='/techniques/'+technique._id, title=technique.title) #{technique.title}
+      p=technique.body
+      .author
+        span= formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
+        | &nbsp;|&nbsp;
+        if (technique.tags)
+          span.tags
+            span Tags :&nbsp;
+            each tag in technique.tags.split(',')
+              a.tag(href="/tags/"+tag)
+                i.icon-tags
+                |  #{tag}
+    hr

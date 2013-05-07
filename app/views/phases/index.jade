@@ -1,0 +1,17 @@
+extends ../layouts/default
+
+block main
+  h1 Phases
+
+block content
+  each phase in phases
+    .phase
+      a.title(href='/phases/'+phase._id, title=phase.title) #{phase.title}
+      p=phase.body
+    hr
+
+  if (pages > 1)
+    .pagination
+      ul
+        != createPagination(pages, page)
+  
