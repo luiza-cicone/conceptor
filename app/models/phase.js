@@ -89,6 +89,7 @@ PhaseSchema.statics = {
     this.find(criteria)
       .populate('techniques')
       .limit(options.perPage)
+      .sort({'title': 1}) // sort by date
       .skip(options.perPage * options.page)
       .exec(cb)
   }

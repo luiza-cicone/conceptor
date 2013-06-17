@@ -17,6 +17,8 @@ block content
   .row
     .span7
       form.form-horizontal(method="post", action=action, enctype="multipart/form-data")
+        input(type='hidden', name='_csrf', value="#{csrf_token}")
+
         if (!technique.isNew)
           input(type="hidden", name="_method", value="PUT")
         else 
@@ -32,14 +34,20 @@ block content
           .controls
             textarea#desc.input-xlarge(type='text', rows="5", name="body", placeholder='Enter the technique description')=technique.body
 
+        each field in fields
+          .control-group
+            label.control-label #{field.title}
+            .controls
+              #{field.tt}(class = '#{field.class} input-xlarge', type='#{field.type}', name='#{field.name}')
+
         .control-group
-          label.control-label(for='desc') Tags
+          label.control-label(for='tags') Tags
           .controls
             input#tags(type='text', name="tags", value=technique.tags, placeholder='Enter the tags')
        
         if (technique.isNew)
           .control-group
-            label.control-label(for='desc') Previous
+            label.control-label(for='prev') Previous
             .controls
               each atechnique in techniques
                 label.checkbox
@@ -59,6 +67,6 @@ block content
          
 
         .form-actions
-          button.btn.btn-primary(type='submit') Save changes
+          button.btn.btn-primary(type='submit') Start
           &nbsp;
           a.btn(href=action, title="cancel") Cancel

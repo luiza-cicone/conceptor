@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -23,6 +22,7 @@ module.exports = function (app, config, passport) {
     },
     level: 9
   }))
+  app.use(express.favicon())
   app.use(express.static(config.root + '/public'))
 
   // don't use logger for test env
@@ -61,7 +61,14 @@ module.exports = function (app, config, passport) {
     app.use(passport.initialize())
     app.use(passport.session())
 
-    app.use(express.favicon())
+    // adds CSRF support
+    app.use(express.csrf())
+
+    // This could be moved to view-helpers :-)
+    app.use(function(req, res, next){
+      res.locals.csrf_token = req.session._csrf
+      next()
+    })
 
     // routes should be at the last
     app.use(app.router)

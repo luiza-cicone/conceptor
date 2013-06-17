@@ -22,7 +22,7 @@ exports.index = function(req, res){
   }
 
   Technique.list(options, function(err, techniques) {
-    if (err) return res.render('500', {error : err})
+    if (err) return res.render('500', {error : err.errors || err})
     Technique.count().exec(function (err, count) {
       res.render('techniques/index', {
         title: 'List of Techniques',
@@ -81,7 +81,9 @@ var page = req.param('page') > 0 ? req.param('page') : 0
       title: 'New Technique',
       technique: new Technique({}),
       techniques: techniques,
-      phase: req.phase
+      phase: req.phase,
+      fields : [{tt:'input', title : 'Description', type : 'text', class : 'desc', name :'desc'}],
+      field : {tt:'input', title : 'Description', type : 'text', class : 'desc', name :'desc'}
     })
   })
 }
@@ -98,6 +100,7 @@ exports.create = function (req, res) {
   technique.user = req.user
 
   var phase = req.phase
+  var techniques = req.techniques;
 
   technique.save(function (err) {
     if (err) return res.render('500', {error : err})
@@ -105,8 +108,6 @@ exports.create = function (req, res) {
     phase.addTechnique(technique, function (err) {
       if (err) return res.render('500', {error : err})
     })
-
-    console.log ("\n\n\nprevious : " + previous + '\n\n')
 
     if (previous instanceof Array) {
       previous.forEach(function (idprev) {
