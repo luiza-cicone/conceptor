@@ -34,7 +34,8 @@ var TechniqueSchema = new Schema({
   phase: {type : Schema.ObjectId, ref : 'Phase'},
   user: {type : Schema.ObjectId, ref : 'User'},
   tags: {type: [], get: getTags, set: setTags},
-  createdAt  : {type : Date, default : Date.now}
+  createdAt  : {type : Date, default : Date.now},
+  finishedAt  : {type : Date}
 })
 
 /**
@@ -104,7 +105,7 @@ TechniqueSchema.statics = {
 
     this.find(criteria)
       .populate('user', 'name')
-      .sort({'createdAt': -1}) // sort by date
+      .sort({'createdAt': 1}) // sort by date
       .limit(options.perPage)
       .skip(options.perPage * options.page)
       .exec(cb)

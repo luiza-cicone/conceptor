@@ -1,9 +1,11 @@
 extends ../layouts/default
 
 block content
-  - var action = '/phases/'+phase._id
+  - var action
   if (!technique.isNew)
-    - action += '/'+technique.id
+    - action = '/techniques/' + technique._id
+  else
+    - action = '/phases/'+phase._id
 
   if (typeof errors !== 'undefined')
     .fade.in.alert.alert-block.alert-error
@@ -34,16 +36,29 @@ block content
           label.control-label(for='desc') Tags
           .controls
             input#tags(type='text', name="tags", value=technique.tags, placeholder='Enter the tags')
+       
+        if (technique.isNew)
+          .control-group
+            label.control-label(for='desc') Previous
+            .controls
+              each atechnique in techniques
+                label.checkbox
+                  input(type='checkbox', name="previous", value=atechnique._id)
+                  | #{atechnique.title}
+        else
+          .control-group
+            .controls
+                label.checkbox
+                  if (!technique.finishedAt)
+                    input(type='checkbox', name="finished", value="finished")
+                    | Finished
+                  else
+                    input(type='checkbox', name="finished", value="finished", checked="true", disabled)
+                    | Finished
 
-        .control-group
-          label.control-label(for='desc') Previous
-          .controls
-            each atechnique in techniques
-              label.checkbox
-                input(type='checkbox', name="previous", value=atechnique._id)
-                | #{atechnique.title}
+         
 
         .form-actions
           button.btn.btn-primary(type='submit') Save changes
           &nbsp;
-          a.btn(href='/phases/'+phase._id, title="cancel") Cancel
+          a.btn(href=action, title="cancel") Cancel

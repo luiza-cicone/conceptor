@@ -8,6 +8,7 @@ var mongoose = require('mongoose')
   , async = require('async')
   , Phase = mongoose.model('Phase')
   , Technique = mongoose.model('Technique')
+  , Link = mongoose.model('Link')
   , _ = require('underscore')
   
 /**
@@ -104,4 +105,15 @@ exports.phase = function(req, res, next, id){
     req.phase = phase
     next()
   })
+}
+
+exports.json = function (callback) {
+  var options = {}
+  Phase.list(options, function(err, techniques) {
+    if (err) return res.render('500', {error : err})
+    Link.list(options, function(err, links) {
+    if (err) return res.render('500', {error : err})
+      callback(techniques, links);
+    })
+  }) 
 }

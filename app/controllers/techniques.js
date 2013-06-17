@@ -15,7 +15,7 @@ var mongoose = require('mongoose')
 
 exports.index = function(req, res){
   var page = req.param('page') > 0 ? req.param('page') : 0
-  var perPage = 15
+  var perPage = 5
   var options = {
     perPage: perPage,
     page: page
@@ -93,8 +93,10 @@ var page = req.param('page') > 0 ? req.param('page') : 0
 exports.create = function (req, res) {
   var previous = req.body.previous
   delete req.body.previous
+
   var technique = new Technique(req.body)
   technique.user = req.user
+
   var phase = req.phase
 
   technique.save(function (err) {
@@ -103,6 +105,9 @@ exports.create = function (req, res) {
     phase.addTechnique(technique, function (err) {
       if (err) return res.render('500', {error : err})
     })
+
+    console.log ("\n\n\nprevious : " + previous + '\n\n')
+
     if (previous instanceof Array) {
       previous.forEach(function (idprev) {
         var link = new Link({source : idprev, target : technique._id})
@@ -123,20 +128,72 @@ exports.create = function (req, res) {
 }
 
 /**
+ * Edit a technique
+ */
+
+exports.edit = function (req, res) {
+  res.render('techniques/edit', {
+    title: 'Edit '+req.technique.title,
+    technique: req.technique,
+  })
+}
+
+/**
+ * Update a technique
+ */
+
+exports.update = function(req, res){
+  var technique = req.technique
+  var util = require('util');
+
+  var newTechnique = _.omit(req.body, 'finished');
+  technique = _.extend(technique, newTechnique);
+  if (req.body.finished)
+      technique = _.extend(technique, {'finishedAt' : Date.now()})
+
+  console.log(util.inspect(technique, false, null));
+
+  technique.save(function(err) {
+    if (err) {
+      console.log ("\n\n\n err : " + err + " \n\n\n")
+      res.render('techniques/edit', {
+        title: 'Edit Technique',
+        technique: technique,
+        errors: err.errors
+      })
+    }
+    else {
+      res.redirect('/techniques/' + technique._id)
+    }
+  })
+}
+
+/**
+ * Delete a technique
+ */
+
+exports.destroy = function(req, res){
+  var technique = req.technique
+  technique.remove(function(err){
+    // req.flash('notice', 'Deleted successfully')
+    res.redirect('phases/'+ technique.phase)
+  })
+}
+
+
+/**
   * Get JSON
   */
 
-exports.json = function (callback) {
-  var options = {}
-  Technique.list(options, function(err, techniques) {
-    if (err) return res.render('500', {error : err})
-    console.log("0 : " + techniques[0])
-    Link.list(options, function(err, links) {
-      if (err) return res.render('500', {error : err})
-      links.forEach(function(link){
+// exports.json = function (callback) {
+//   var options = {}
+//   Technique.list(options, function(err, techniques) {
+//     if (err) return res.render('500', {error : err})
+//     // console.log("\n\n\t\t\t" + techniques[0].createdAt.getTime() + "\n\n\n");
+//     Link.list(options, function(err, links) {
+//       if (err) return res.render('500', {error : err})
 
-      })
-      callback(techniques, links);
-    })
-  }) 
-}
+//       callback(techniques, links);
+//     })
+//   }) 
+// }

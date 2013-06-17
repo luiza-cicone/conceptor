@@ -1,5 +1,5 @@
 body {
-  padding-top: 60px;
+  padding-top: 40px;
 }
 
 .date {
@@ -58,7 +58,28 @@ a.tag {
 }
 
 .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+    }
+
+.axis line,
+.axis path {
   fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.timeline-line {
+  stroke-width: 0.5;
+  text-anchor: middle;
+}
+
+.timeline-label {
+  fill: #999;
+  anchor
+}
+
+#canvas {
+  border: 1px solid #ccc;
 }

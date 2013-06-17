@@ -26,13 +26,13 @@ exports.user = {
 
 
 /*
- *  Article authorizations routing middleware
+ *  Technique authorizations routing middleware
  */
 
-exports.article = {
+exports.technique = {
     hasAuthorization : function (req, res, next) {
-      if (req.article.user.id != req.user.id) {
-        return res.redirect('/articles/'+req.article.id)
+      if (req.technique.user.id != req.user.id) {
+        return res.redirect('/techniques/'+req.technique.id)
       }
       next()
     }

@@ -12,6 +12,8 @@ header#header
               - if (typeof(phase) !== 'undefined'){
                 a(href="/phases/" + phase._id + "/new", title="New Technique") New technique
               -}
+            li
+                a(href='/graph', title="graph") Graph
           ul.nav.pull-right
             if (req.isAuthenticated())
               //

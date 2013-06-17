@@ -18,3 +18,11 @@ block content
             span.tag
               i.icon-tags
               |  #{tag}
+          
+  p
+    br
+    form.center.form-inline.confirm(action="/techniques/"+technique.id, method="post")
+      a.btn(href='/techniques/'+technique._id+'/edit', title="edit") Edit
+      &nbsp;&nbsp;
+      input(type="hidden", name="_method", value="DELETE")
+      button.btn.btn-danger(type="submit") delete
