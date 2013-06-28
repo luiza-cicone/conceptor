@@ -26,10 +26,6 @@ PhaseSchema.path('title').validate(function (title) {
   return title.length > 0
 }, 'Phase title cannot be blank')
 
-PhaseSchema.path('body').validate(function (body) {
-  return body.length > 0
-}, 'Phase body cannot be blank')
-
 
 /**
  * Methods

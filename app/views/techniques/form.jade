@@ -33,13 +33,7 @@ block content
           label.control-label(for='desc') Body
           .controls
             textarea#desc.input-xlarge(type='text', rows="5", name="body", placeholder='Enter the technique description')=technique.body
-
-        each field in fields
-          .control-group
-            label.control-label #{field.title}
-            .controls
-              #{field.tt}(class = '#{field.class} input-xlarge', type='#{field.type}', name='#{field.name}')
-
+            
         .control-group
           label.control-label(for='tags') Tags
           .controls

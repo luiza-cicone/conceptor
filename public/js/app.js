@@ -13,34 +13,15 @@ $(document).ready(function () {
     });
   });
 
-  $('#tags').tagsInput({
-    'height':'60px',
-    'width':'280px'
-  });
-
-/*
-  $('form').jsonForm({
-    schema: {
-      name: {
-        type: 'string',
-        title: 'Name',
-        required: true
-      },
-      age: {
-        type: 'number',
-        title: 'Age'
-      }
-    },
-    onSubmit: function (errors, values) {
-      if (errors) {
-        $('#res').html('<p>I beg your pardon?</p>');
-      }
-      else {
-        $('#res').html('<p>Hello ' + values.name + '.' +
-          (values.age ? '<br/>You are ' + values.age + '.' : '') +
-          '</p>');
-      }
+  $('.alphanumeric').bind("keypress", function (event) {
+    if (event.charCode!=0) {
+        var regex = new RegExp("^[a-zA-Z0-9]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
     }
   });
-*/
+
 });

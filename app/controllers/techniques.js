@@ -4,22 +4,19 @@
  */
 
 var mongoose = require('mongoose')
-    , async = require('async')
     , Technique = mongoose.model('Technique')
     , Link = mongoose.model('Link')
+    , Form = mongoose.model('Form')
     , _ = require('underscore')
+    , fs = require('fs');
+
 
 /**
  * List of Techniques
  */
 
 exports.index = function(req, res){
-  var page = req.param('page') > 0 ? req.param('page') : 0
-  var perPage = 5
-  var options = {
-    perPage: perPage,
-    page: page
-  }
+  var options = {}
 
   Technique.list(options, function(err, techniques) {
     if (err) return res.render('500', {error : err.errors || err})
@@ -39,9 +36,12 @@ exports.index = function(req, res){
  */
 
 exports.show = function(req, res){
+  console.log("phase : ")
+  console.log(req.phase)
   res.render('techniques/show', {
     title: req.technique.title,
-    technique: req.technique
+    technique: req.technique,
+    phase: req.phase
   })
 }
 
@@ -61,70 +61,84 @@ exports.technique = function(req, res, next, id){
   })
 }
 
+/**
+ * New technique of type
+ */
+
+exports.newType = function(req, res){
+
+  var name = req.params.technique_type
+  Form.load(name, function (err, form) {
+    if (err || !form)
+      return res.render('500', {error : "Failed to load form."})
+
+    res.render('form', {
+      title : form.name,
+      phase: req.phase
+    });
+  })
+}
+
 
 /**
  * New technique
  */
 
-exports.new = function(req, res){
+// exports.new = function(req, res){    
+//   res.render('techniques/new', {
+//     title: 'New Technique',
+//     phase: req.phase
+//   })
+// }
 
-var page = req.param('page') > 0 ? req.param('page') : 0
-  var perPage = 15
-  var options = {
-    perPage: perPage,
-    page: page
-  }
-  
-  Technique.list(options, function(err, techniques) {
-    if (err) return res.render('500', {error : err})
-    res.render('techniques/new', {
-      title: 'New Technique',
-      technique: new Technique({}),
-      techniques: techniques,
-      phase: req.phase,
-      fields : [{tt:'input', title : 'Description', type : 'text', class : 'desc', name :'desc'}],
-      field : {tt:'input', title : 'Description', type : 'text', class : 'desc', name :'desc'}
-    })
-  })
-}
 
 /**
  * Create a technique
  */
 
 exports.create = function (req, res) {
-  var previous = req.body.previous
-  delete req.body.previous
-
-  var technique = new Technique(req.body)
-  technique.user = req.user
-
-  var phase = req.phase
-  var techniques = req.techniques;
-
-  technique.save(function (err) {
-    if (err) return res.render('500', {error : err})
-
-    phase.addTechnique(technique, function (err) {
+  var files = req.files
+  var errors1;
+  fs.readFile(req.files.files[0].path, function (err, data) {
+    // ...
+    var newPath = __dirname + "/uploads /" + req.files.files[0].name;
+    fs.writeFile(newPath, data, function (err) {
       if (err) return res.render('500', {error : err})
-    })
 
-    if (previous instanceof Array) {
-      previous.forEach(function (idprev) {
-        var link = new Link({source : idprev, target : technique._id})
-        link.save(function (err) {
-          if (err) return res.render('500', {error : err})
-        }); 
-      })
-    } else if (typeof previous != "undefined") {
-      var link = new Link({source : previous, target : technique._id})
-      link.save(function (err) {
+      var previous = req.body.previous
+      delete req.body.previous
+
+      var technique = new Technique(req.body)
+      technique.user = req.user
+
+      var phase = req.phase
+      var techniques = req.techniques;
+
+      technique.save(function (err) {
         if (err) return res.render('500', {error : err})
-      }); 
-    }
-    
-    res.redirect('phases/'+ phase._id)
 
+        phase.addTechnique(technique, function (err) {
+          if (err) return res.render('500', {error : err})
+        })
+
+        if (previous instanceof Array) {
+          previous.forEach(function (idprev) {
+            var link = new Link({source : idprev, target : technique._id})
+            link.save(function (err) {
+              if (err) return res.render('500', {error : err})
+            }); 
+          })
+        } else if (typeof previous != "undefined") {
+          var link = new Link({source : previous, target : technique._id})
+          link.save(function (err) {
+            if (err) return res.render('500', {error : err})
+          }); 
+        }
+        
+        res.redirect('phases/'+ phase._id)
+
+      });
+    });
   });
 }
 
@@ -174,27 +188,9 @@ exports.update = function(req, res){
  */
 
 exports.destroy = function(req, res){
-  var technique = req.technique
+  var technique = req.technique;
   technique.remove(function(err){
     // req.flash('notice', 'Deleted successfully')
-    res.redirect('phases/'+ technique.phase)
+    res.redirect('phases')
   })
 }
-
-
-/**
-  * Get JSON
-  */
-
-// exports.json = function (callback) {
-//   var options = {}
-//   Technique.list(options, function(err, techniques) {
-//     if (err) return res.render('500', {error : err})
-//     // console.log("\n\n\t\t\t" + techniques[0].createdAt.getTime() + "\n\n\n");
-//     Link.list(options, function(err, links) {
-//       if (err) return res.render('500', {error : err})
-
-//       callback(techniques, links);
-//     })
-//   }) 
-// }

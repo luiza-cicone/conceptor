@@ -4,8 +4,6 @@
  */
 
 var mongoose = require('mongoose')
-  , Imager = require('imager')
-  , async = require('async')
   , Phase = mongoose.model('Phase')
   , Technique = mongoose.model('Technique')
   , Link = mongoose.model('Link')
@@ -37,10 +35,10 @@ exports.index = function(req, res){
 }
 
 /**
- * View a phase
+ * View graph
  */
 
-exports.showgraph = function(req, res){
+exports.graph = function(req, res){
 
   var page = req.param('page') > 0 ? req.param('page') : 0
   var perPage = 15
@@ -52,8 +50,8 @@ exports.showgraph = function(req, res){
   Phase.list(options, function(err, phases) {
     if (err) return res.render('500', {error : err})
     Phase.count().exec(function (err, count) {
-      res.render('phases/showgraph', {
-        title: 'List of Phase',
+      res.render('phases/graph', {
+        title: 'Graph',
         phases: phases,
         page: page,
         pages: count / perPage
@@ -70,26 +68,6 @@ exports.show = function(req, res){
     techniques: req.phase.techniques,
     phase : req.phase
   })
-
-// var page = req.param('page') > 0 ? req.param('page') : 0
-//   var perPage = 15
-//   var options = {
-//     perPage: perPage,
-//     page: page,
-//     criteria : {phase : req.phase._id}
-//   }
-
-//   Technique.list(options, function(err, techniques) {
-//     if (err) return res.render('500', {error : err})
-
-//     Technique.count().exec(function (err, count) {
-//       res.render('phases/show', {
-//         title: 'List of Techniques',
-//         techniques: techniques,
-//         phase : req.phase
-//       })
-//     })
-//   })
 }
 
 
@@ -107,13 +85,18 @@ exports.phase = function(req, res, next, id){
   })
 }
 
+/**
+ * Exports JSON for graph
+ */
+
 exports.json = function (callback) {
   var options = {}
   Phase.list(options, function(err, techniques) {
     if (err) return res.render('500', {error : err})
     Link.list(options, function(err, links) {
-    if (err) return res.render('500', {error : err})
+      if (err) return res.render('500', {error : err})
       callback(techniques, links);
     })
   }) 
 }
+

@@ -1,0 +1,14 @@
+extends layouts/default_form
+
+block main
+  h1 New #{title}
+  hr
+
+block content
+ - var action = '/phases/'+phase._id
+  //
+    .alert
+      button.close(type='button', data-dismiss='alert') ×
+      strong Warning!
+  form.form-horizontal(method="post", action=action, enctype="multipart/form-data")
+    input(type='hidden', name='_csrf', value="#{csrf_token}")

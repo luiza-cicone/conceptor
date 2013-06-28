@@ -1,0 +1,70 @@
+{
+    "schema": {
+        "title": {
+            "type": "string",
+            "title": "Title"
+        },
+        "comments": {
+            "type": "string",
+            "title": "Comments"
+        },
+        "tags": {
+            "type": "string",
+            "title": "Tags"
+        },
+        "files": {
+            "type": "array",
+            "title": "Files",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "form": [
+        {
+            "key": "title",
+            "fieldHtmlClass": "span5"
+        },
+        {
+            "key": "comments",
+            "type": "textarea",
+            "fieldHtmlClass": "span5"
+        },
+        {
+            "key": "tags",
+            "id": "tags"
+        },
+        {
+            "type": "tabarray",
+            "title": "Files",
+            "items": [
+                {
+                    "type": "section",
+                    "legend": "{{idx}}.{{value}}",
+                    "items": [
+                        {
+                            "key": "files[]",
+                            "type": "file",
+                            "htmlClass": "no-indent",
+                            "fieldHtmlClass": "span4",
+                            "valueInLegend": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "actions",
+            "items": [
+                {
+                    "type": "submit",
+                    "title": "Save"
+                },
+                {
+                    "type": "button",
+                    "title": "Cancel"
+                }
+            ]
+        }
+    ]
+}

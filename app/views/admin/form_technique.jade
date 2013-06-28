@@ -1,0 +1,25 @@
+extends ../layouts/default
+
+block content
+  form.form-horizontal(method="post", action="/admin", enctype="multipart/form-data")
+    input(type='hidden', name='_csrf', value="#{csrf_token}")
+
+    .control-group
+      label.control-label(for='title') Name
+      .controls
+        input#title.input-xlarge(type='text', name="name")
+
+    .control-group
+      label.control-label(for='id') Id
+      .controls
+        input#id.input-xlarge(type='text', name="id", class="alphanumeric")
+
+    .control-group
+      label.control-label(for='desc') JSON
+      .controls
+        textarea#desc.input-xlarge(type='text', rows="5", name="json")
+
+    .form-actions
+      button.btn.btn-primary(type='submit') Save
+      &nbsp;
+      a.btn(href="/admin", title="cancel") Cancel

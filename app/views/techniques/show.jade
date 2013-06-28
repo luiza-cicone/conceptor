@@ -26,4 +26,5 @@ block content
       a.btn(href='/techniques/'+technique._id+'/edit', title="edit") Edit
       &nbsp;&nbsp;
       input(type="hidden", name="_method", value="DELETE")
+      input(type="hidden", name="phase", value="technique.phase")
       button.btn.btn-danger(type="submit") delete

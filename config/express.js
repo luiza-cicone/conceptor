@@ -94,11 +94,4 @@ module.exports = function (app, config, passport) {
     })
 
   })
-//   io.sockets.on('connection', function (socket) {
-//     console.log ("on connection")
-//     socket.emit('news', { hello: 'world' });
-//     socket.on('my other event', function (data) {
-//       console.log(data);
-//  });
-// });
 }

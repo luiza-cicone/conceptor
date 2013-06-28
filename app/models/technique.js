@@ -35,7 +35,8 @@ var TechniqueSchema = new Schema({
   user: {type : Schema.ObjectId, ref : 'User'},
   tags: {type: [], get: getTags, set: setTags},
   createdAt  : {type : Date, default : Date.now},
-  finishedAt  : {type : Date}
+  finishedAt  : {type : Date},
+  data : Schema.Types.Mixed
 })
 
 /**
@@ -46,9 +47,9 @@ TechniqueSchema.path('title').validate(function (title) {
   return title.length > 0
 }, 'Technique title cannot be blank')
 
-TechniqueSchema.path('body').validate(function (body) {
-  return body.length > 0
-}, 'Technique body cannot be blank')
+// TechniqueSchema.path('body').validate(function (body) {
+//   return body.length > 0
+// }, 'Technique body cannot be blank')
 
 /**
  * Methods

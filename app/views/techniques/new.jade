@@ -1,5 +1,8 @@
-extends form
+extends ../layouts/default
 
 block main
   h1 New Technique for #{phase.title}
   hr
+  each technique in techniques
+    a.btn(href="/phases/" + phase._id + "/new/" + technique.id) #{technique.name}
+    hr

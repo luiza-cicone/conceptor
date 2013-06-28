@@ -1,5 +1,14 @@
-body {
-  padding-top: 40px;
+.container {
+  max-width: 900px;
+}
+
+.navbar-fixed-top {
+  margin-bottom: 20px;
+  position: static;
+}
+
+.navbar-inner{
+  padding: 5px;
 }
 
 .date {
@@ -11,12 +20,16 @@ body {
   color: #aaa;
 }
 
+h1 {
+  font-size: 22px;
+}
+
 .title {
   padding: 5px 0 15px 0;
   display: block;
-  font-size: 24px;
+  font-size: 18px;
 }
-
+/*
 .article, .comment {
   padding: 15px 0;
   border-top: 1px solid #e8e8e8;
@@ -30,6 +43,8 @@ body {
 .btn {
   outline: none !important;
 }
+
+*/
 
 .center {
   text-align: center;
@@ -46,22 +61,6 @@ a.tag {
 .error {
   color: #FF2602;
 }
-
-.node rect {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-.node {
-  font: 10px sans-serif;
-}
-
-.link {
-        fill: none;
-        stroke: #ccc;
-        stroke-width: 1.5px;
-    }
 
 .axis line,
 .axis path {
@@ -81,5 +80,9 @@ a.tag {
 }
 
 #canvas {
+  width: 940px;
   border: 1px solid #ccc;
+}
+.form-horizontal .no-indent {
+  margin-left: 0 ;
 }
