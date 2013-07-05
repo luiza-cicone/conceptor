@@ -24,59 +24,55 @@ module.exports = function (app, passport, auth) {
 
   var techniques = require('../app/controllers/techniques')
   var forms = require('../app/controllers/forms')
+  var phases = require('../app/controllers/phases')
 
-  //
   //
   // admin routes
   //
-  //
 
   var admin = require('../app/controllers/admin')
+
   app.get('/admin', auth.requiresLogin, admin.index)
+
+  app.get('/admin/techniques', auth.requiresLogin, admin.techniques)
   app.get('/admin/techniques/new', auth.requiresLogin, admin.newTechnique)
-  app.post('/admin', auth.requiresLogin, admin.createTechnique)
+  app.put('/admin/techniques/:type', auth.requiresLogin, admin.modifyTechnique)
+  app.get('/admin/techniques/:type', auth.requiresLogin, admin.show)
+  app.post('/admin/techniques', auth.requiresLogin, admin.createTechnique)
 
+  app.param('type', admin.technique)
 
   //
+  // phases 
   //
-  // phases routes
-  //
-  //
-
-  var phases = require('../app/controllers/phases')
 
   // graph
   app.get('/graph', phases.graph)
 
   // techniques
-  app.get('/phases', phases.index)
-  app.get('/phases/:phase_id', phases.show)
-  app.get('/phases/:phase_id/new', auth.requiresLogin, forms.list)
-  app.get('/phases/:phase_id/new/:technique_type', auth.requiresLogin, techniques.newType)
-  app.post('/phases/:phase_id', auth.requiresLogin, techniques.create)
+  app.get   ('/phases', phases.index)
+  app.get   ('/phases/:phase_id', phases.show)
 
+  app.get   ('/phases/:phase_id/new', auth.requiresLogin, techniques.new)
+  app.get   ('/phases/:phase_id/new/:type', auth.requiresLogin, techniques.newType)
+  app.post  ('/phases/:phase_id', auth.requiresLogin, techniques.create)
+
+  app.get   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.show)
+  app.get   ('/phases/:phase_id/:technique_id/edit', auth.requiresLogin, techniques.edit)
+  app.put   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.update)
+  app.del   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.destroy)
 
   app.param('phase_id', phases.phase)
-
-  //
-  //
-  // techniques routes
-  //
-  //
-  app.get('/techniques', techniques.index)
-
-  app.get('/techniques/:technique_id', techniques.show)
-  app.get('/techniques/:technique_id/edit', auth.requiresLogin, auth.technique.hasAuthorization, techniques.edit)
-  app.put('/techniques/:technique_id', auth.requiresLogin, auth.technique.hasAuthorization, techniques.update)
-  app.del('/techniques/:technique_id', auth.requiresLogin, auth.technique.hasAuthorization, techniques.destroy)
-
   app.param('technique_id', techniques.technique)
+
   //
   // home route
   //
   app.get('/', phases.index)
 
+  //
   // tag routes
+  //
   var tags = require('../app/controllers/tags')
   app.get('/tags/:tag', tags.index)
 

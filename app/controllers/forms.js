@@ -9,22 +9,6 @@ var mongoose = require('mongoose')
   , _ = require('underscore')
 
 /*
- * list
- */
-
-exports.list = function(req, res){
-  Form.list(function(err, techniques) {
-    if (err) return res.render('500', {error : err.errors || err})
-    res.render('techniques/new', {
-      title: 'List of Techniques',
-      techniques: techniques,
-      phase : req.phase
-    })
-  })
-}
-
-
-/*
  * Json form
  */
 

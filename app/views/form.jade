@@ -1,7 +1,7 @@
 extends layouts/default_form
 
 block main
-  h1 New #{title}
+  h1 #{title}
   hr
 
 block content
@@ -12,3 +12,5 @@ block content
       strong Warning!
   form.form-horizontal(method="post", action=action, enctype="multipart/form-data")
     input(type='hidden', name='_csrf', value="#{csrf_token}")
+    input(type='hidden', name='form', value=form.name)
+    input(type='hidden', name='type', value=form.id)

@@ -6,7 +6,7 @@ block main
 block content
   each technique in techniques
     .technique
-      a.title(href='/techniques/'+technique._id, title=technique.title) #{technique.title}
+      a.title(href='/phases/'+phase._id+'/'+technique._id, title=technique.title) #{technique.title}
       p=technique.body
       .author
         span= formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")

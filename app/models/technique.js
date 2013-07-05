@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
   , env = process.env.NODE_ENV || 'development'
   , config = require('../../config/config')[env]
   , Schema = mongoose.Schema
+  , fs = require('fs')
 
 /**
  * Getters
@@ -30,22 +31,23 @@ var setTags = function (tags) {
 
 var TechniqueSchema = new Schema({
   title: {type : String, default : '', trim : true},
-  body: {type : String, default : '', trim : true},
-  phase: {type : Schema.ObjectId, ref : 'Phase'},
-  user: {type : Schema.ObjectId, ref : 'User'},
+  comments: {type : String, default : '', trim : true},
   tags: {type: [], get: getTags, set: setTags},
   createdAt  : {type : Date, default : Date.now},
   finishedAt  : {type : Date},
-  data : Schema.Types.Mixed
+  phase: {type : Schema.ObjectId, ref : 'Phase'},
+  type: {type : String, default : '', trim : true},
+  user: {type : Schema.ObjectId, ref : 'User'},
+  others: {type : Schema.ObjectId, ref : 'Other'}
 })
 
 /**
  * Validations
  */
 
-TechniqueSchema.path('title').validate(function (title) {
-  return title.length > 0
-}, 'Technique title cannot be blank')
+// TechniqueSchema.path('title').validate(function (title) {
+//   return title.length > 0
+// }, 'Technique title cannot be blank')
 
 // TechniqueSchema.path('body').validate(function (body) {
 //   return body.length > 0
@@ -56,21 +58,56 @@ TechniqueSchema.path('title').validate(function (title) {
  */
 
 TechniqueSchema.methods = {
-/**
-   * Add technique
-   *
-   * @param {Technique} technique
-   * @param {Function} cb
-   * @api private
+
+  /*
+   * Upload and save
    */
 
-  // addChildTechnique: function (technique, cb) {
-  //   this.children.push({
-  //     _id: technique._id
-  //   })
+  uploadAndSave: function (files, cb) {
 
-  //   this.save(cb)
-  // }
+    console.log(files);
+
+    if (!files || (files.count)) return this.save(cb)
+    
+    for(key in files) {
+
+      var fileArray = files[key];
+      if (!(fileArray instanceof Array)) {
+        var newPath = saveFile(fileArray);
+      }
+      else if (fileArray instanceof Array) {
+        var stringArray = [];
+        for (var i = 0; i < fileArray.length; i++) {
+          var newPath = saveFile(fileArray[i]);
+          if (newPath)
+            stringArray.push(newPath);
+        }
+      }
+    }
+  
+    this.save(cb);
+  }
+
+  /*
+   * Other ?
+   */
+
+}
+
+function saveFile(file) {
+  if (!file.name) return;
+
+  fs.readFile(file.path, function (err, data) {
+    if (err) console.log(err)
+    var newPath = __dirname + "/../uploads/" + file.name;
+
+    fs.writeFile(newPath, data, function (err) {
+      if (err) console.log(err)
+    })
+
+    return newPath
+
+  })
 }
 
 /**

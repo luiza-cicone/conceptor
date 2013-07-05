@@ -1,25 +1,35 @@
 extends ../layouts/default
 
 block content
-  form.form-horizontal(method="post", action="/admin", enctype="multipart/form-data")
+  - var action = '/admin/techniques'
+  if (!technique.isNew)
+    - action += '/' + technique.id
+
+  form.form-horizontal.confirm(method="post", action=action, enctype="multipart/form-data")
     input(type='hidden', name='_csrf', value="#{csrf_token}")
+
+    if (!technique.isNew)
+      input(type="hidden", name="_method", value="PUT")
 
     .control-group
       label.control-label(for='title') Name
       .controls
-        input#title.input-xlarge(type='text', name="name")
+        input#title.input-xlarge(type='text', name="name", value=technique.name)
 
     .control-group
       label.control-label(for='id') Id
       .controls
-        input#id.input-xlarge(type='text', name="id", class="alphanumeric")
+        input#id.input-xlarge(type='text', name="id", class="alphanumeric", value=technique.id)
 
     .control-group
       label.control-label(for='desc') JSON
       .controls
-        textarea#desc.input-xlarge(type='text', rows="5", name="json")
+        textarea#desc.input-xlarge(type='text', rows='5', name="json")=jsonText
 
     .form-actions
-      button.btn.btn-primary(type='submit') Save
+      button.btn.btn-primary(type='submit', name='action', value='save') Save
       &nbsp;
-      a.btn(href="/admin", title="cancel") Cancel
+      a.btn(href="/admin/techniques", title="cancel") Cancel
+      if (!technique.isNew)
+        &nbsp;
+        button.btn.btn-danger(type='submit', name='action', value='delete') Delete

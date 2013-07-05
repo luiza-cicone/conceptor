@@ -18,7 +18,7 @@ window.app.RenderGraph = function (nodes, links) {
           // datum is the id object
           })
           .click(function (d, i, datum) {
-            window.open('/techniques/' + d._id, '_self');
+            window.open('/phases/' + datum._id + '/' + d._id, '_self');
           })
           .scroll(function (x, scale) {
           });

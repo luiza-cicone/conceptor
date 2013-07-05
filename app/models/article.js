@@ -81,12 +81,12 @@
 
 // ArticleSchema.methods = {
 
-//   *
-//    * Save article and upload image
-//    *
-//    * @param {Object} images
-//    * @param {Function} cb
-//    * @api private
+//   // *
+//   //  * Save article and upload image
+//   //  *
+//   //  * @param {Object} images
+//   //  * @param {Function} cb
+//   //  * @api private
    
 
 //   uploadAndSave: function (images, cb) {

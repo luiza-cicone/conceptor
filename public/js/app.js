@@ -1,16 +1,30 @@
 $(document).ready(function () {
+  var danger = false;
 
-  // confirmations
+  $('.btn[type="submit"]').click(function () {
+    danger = false;
+  });
+
+  $('.btn-danger[type="submit"]').click(function () {
+    danger = true;
+  });
+
+
+  //confirmations
   $('.confirm').submit(function (e) {
-    e.preventDefault();
-    var self = this;
-    var msg = 'Are you sure?';
-    bootbox.confirm(msg, 'cancel', 'Yes! I am sure', function (action) {
-      if (action) {
-        $(self).unbind('submit');
-        $(self).trigger('submit');
-      }
-    });
+    if(danger) {
+      e.preventDefault();
+      var self = this;
+      var msg = 'Are you sure?';
+      bootbox.confirm(msg, 'cancel', 'Yes! I am sure', function (action) {
+        if (action) {
+          $(self).unbind('submit');
+          event.action = 'delete'
+          $(self).trigger('submit');
+
+        }
+      });
+    }
   });
 
   $('.alphanumeric').bind("keypress", function (event) {
@@ -22,6 +36,6 @@ $(document).ready(function () {
             return false;
         }
     }
-  });
+  });  
 
 });

@@ -1,0 +1,13 @@
+extends ../layouts/default
+
+block main
+  h1 Admin techniques
+  hr
+  a.btn(href="/admin/techniques/new") New techniques
+  hr
+  p Edit techniques
+  br
+  each technique in techniques
+    p
+      a.btn(href="/admin/techniques/" + technique.id) #{technique.name}
+    

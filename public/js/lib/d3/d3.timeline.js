@@ -1,3 +1,4 @@
+var minInterval = 900000;
 
 function lcm_rec(i, array) {
   var a=array[i];
@@ -98,6 +99,9 @@ function gcd(a, b) {
               datum.techniques.forEach(function (time, i) {
                 if (new Date(time.createdAt).getTime() < minTime || minTime == 0)
                   minTime = new Date(time.createdAt).getTime();
+                if (!time.finishedAt) {
+                  maxTime = Math.max(Date.now(), new Date(time.createdAt).getTime()*1 + minInterval);
+                }
                 if (new Date(time.finishedAt).getTime() > maxTime)
                   maxTime = new Date(time.finishedAt).getTime();
               });
@@ -147,7 +151,10 @@ function gcd(a, b) {
             data.forEach(function(activity, activityIndex) {
 
               var createdAt = new Date(activity.createdAt).getTime()
-              var finishedAt = new Date(activity.finishedAt).getTime()
+              var finishedAt;
+              if (!activity.finishedAt)
+                finishedAt = Math.max(Date.now(), new Date(activity.createdAt).getTime()*1 + minInterval);
+              else finishedAt = new Date(activity.finishedAt).getTime()
 
               voisins.splice(activityIndex, 0, 1);
               finished.push({no : activityIndex, finishedAt : finishedAt})
@@ -175,8 +182,10 @@ function gcd(a, b) {
 
             data.forEach(function(activity, activityIndex) {
               var createdAt = new Date(activity.createdAt).getTime()
-              var finishedAt = new Date(activity.finishedAt).getTime()
-
+              var finishedAt;
+              if (!activity.finishedAt)
+                finishedAt = Math.max(Date.now(), new Date(activity.createdAt).getTime()*1 + minInterval);
+              else finishedAt = new Date(activity.finishedAt).getTime()
               var increment = length/voisins[activityIndex];
 
               for (j = 0; j < length; j = j+increment) {
@@ -252,7 +261,12 @@ function gcd(a, b) {
           }
 
           function getElementWidth(d, i) {
-            var width =  (new Date(d.finishedAt).getTime() - new Date(d.createdAt).getTime()) * scaleFactor;
+            var finishedAt;
+              if (!d.finishedAt)
+                finishedAt = Math.max(Date.now(), new Date(d.createdAt).getTime()*1 + minInterval);
+              else finishedAt = new Date(d.finishedAt).getTime()
+
+            var width =  (finishedAt - new Date(d.createdAt).getTime()) * scaleFactor;
             
             //make the activity 1% shorter to max 30min 
             width-= Math.min(1800000, .1*width);
