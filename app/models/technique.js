@@ -7,7 +7,6 @@ var mongoose = require('mongoose')
   , env = process.env.NODE_ENV || 'development'
   , config = require('../../config/config')[env]
   , Schema = mongoose.Schema
-  , fs = require('fs')
 
 /**
  * Getters
@@ -38,8 +37,25 @@ var TechniqueSchema = new Schema({
   phase: {type : Schema.ObjectId, ref : 'Phase'},
   type: {type : String, default : '', trim : true},
   user: {type : Schema.ObjectId, ref : 'User'},
-  others: {type : Schema.ObjectId, ref : 'Other'}
+  others: {type : Schema.Types.ObjectId}
 })
+
+// /**
+//  * Pre-remove hook
+//  */
+
+//
+// TechniqueSchema.pre('remove', function (next) {
+//   var phase = this.phase
+//   var others = this.others
+
+//   // if there are files associated with the item, remove from the cloud too
+//   others.remove(others, function (err) {
+//     if (err) return next(err)
+//   }, 'article')
+
+//   next()
+// })
 
 /**
  * Validations
@@ -59,55 +75,6 @@ var TechniqueSchema = new Schema({
 
 TechniqueSchema.methods = {
 
-  /*
-   * Upload and save
-   */
-
-  uploadAndSave: function (files, cb) {
-
-    console.log(files);
-
-    if (!files || (files.count)) return this.save(cb)
-    
-    for(key in files) {
-
-      var fileArray = files[key];
-      if (!(fileArray instanceof Array)) {
-        var newPath = saveFile(fileArray);
-      }
-      else if (fileArray instanceof Array) {
-        var stringArray = [];
-        for (var i = 0; i < fileArray.length; i++) {
-          var newPath = saveFile(fileArray[i]);
-          if (newPath)
-            stringArray.push(newPath);
-        }
-      }
-    }
-  
-    this.save(cb);
-  }
-
-  /*
-   * Other ?
-   */
-
-}
-
-function saveFile(file) {
-  if (!file.name) return;
-
-  fs.readFile(file.path, function (err, data) {
-    if (err) console.log(err)
-    var newPath = __dirname + "/../uploads/" + file.name;
-
-    fs.writeFile(newPath, data, function (err) {
-      if (err) console.log(err)
-    })
-
-    return newPath
-
-  })
 }
 
 /**

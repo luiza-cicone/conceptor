@@ -6,8 +6,8 @@ block main
 block content
   each phase in phases
     .phase
-      a.title(href='/phases/'+phase._id, title=phase.title) #{phase.title}
-      p=phase.body
+      a.title(href='/phases/'+phase._id, title=phase.name) #{phase.name}
+      p=phase.comments
     hr
 
   if (pages > 1)

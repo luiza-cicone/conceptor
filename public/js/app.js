@@ -38,4 +38,8 @@ $(document).ready(function () {
     }
   });  
 
+  $('#tags').tagsInput({
+    class: "input-xlarge"
+  });
+
 });

@@ -1,0 +1,15 @@
+extends ../layouts/default
+
+block main
+  h1 #{title}
+
+block content
+  each process in processes
+    .process
+      if (concrete == 1)
+        a.title(href='/processes/' + process._id, title=process.name) #{process.name}
+      else
+        a.title(href='/' + process._id, title=process.name) #{process.name}
+      p=process.comments
+    hr
+  

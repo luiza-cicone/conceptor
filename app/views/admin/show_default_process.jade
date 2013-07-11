@@ -1,0 +1,21 @@
+extends ../layouts/default
+
+block main
+  h1 #{title}
+
+block content
+  p #{aProcess.comments}
+  if (aProcess.tags)
+    .tags
+      | Tags :&nbsp;
+      each tag in aProcess.tags.split(',')
+        span.tag
+          i.icon-tags
+          |  #{tag}
+  br
+  p.text-error TODO : Graph image
+
+  p
+    br
+  if (defaultA)
+    a.btn.btn-primary(href=aProcess._id+"/new", title="instantiate") Instantiate

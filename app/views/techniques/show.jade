@@ -23,7 +23,7 @@ block content
     br
     form.center.form-inline.confirm(action="/phases/"+phase._id+"/"+technique.id, method="post")
       input(type='hidden', name='_csrf', value="#{csrf_token}")
-      a.btn(href='/phases/'+phase._id+'/'+technique._id+'/edit', title="edit") Edit
+      a.btn(href='/phases/'+phase._id+'/'+technique._id+'/edit/' + technique.type, title="edit") Edit
       &nbsp;&nbsp;
       input(type="hidden", name="_method", value="DELETE")
       button.btn.btn-danger(type="submit", value="delete") Delete

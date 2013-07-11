@@ -31,8 +31,13 @@ module.exports = function (app, passport, auth) {
   //
 
   var admin = require('../app/controllers/admin')
+  var admin_phases = require('../app/controllers/admin_phases')
+  var admin_processes = require('../app/controllers/admin_processes')
 
   app.get('/admin', auth.requiresLogin, admin.index)
+
+  // app.get('/admin/processes/insert', auth.requiresLogin, admin_processes.insertA)
+  // app.get('/admin/phases/insert', auth.requiresLogin, admin_phases.insert)
 
   app.get('/admin/techniques', auth.requiresLogin, admin.techniques)
   app.get('/admin/techniques/new', auth.requiresLogin, admin.newTechnique)
@@ -58,7 +63,7 @@ module.exports = function (app, passport, auth) {
   app.post  ('/phases/:phase_id', auth.requiresLogin, techniques.create)
 
   app.get   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.show)
-  app.get   ('/phases/:phase_id/:technique_id/edit', auth.requiresLogin, techniques.edit)
+  app.get   ('/phases/:phase_id/:technique_id/edit/:type', auth.requiresLogin, techniques.edit)
   app.put   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.update)
   app.del   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.destroy)
 
@@ -68,7 +73,21 @@ module.exports = function (app, passport, auth) {
   //
   // home route
   //
-  app.get('/', phases.index)
+  app.get  ('/', admin_processes.index);
+  app.get  ('/start', admin_processes.listAll);
+
+  app.get  ('/processes', admin_processes.list);
+  app.get  ('/processes/:process_id', admin_processes.showOne);
+
+  app.get  ('/:default_process_id', admin_processes.showOne);
+  app.get  ('/:default_process_id/new', admin_processes.new);
+  app.post ('/:default_process_id', admin_processes.create);
+
+
+
+  app.param('default_process_id', admin_processes.default_process)
+  app.param('process_id', admin_processes.process)
+
 
   //
   // tag routes

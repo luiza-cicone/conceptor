@@ -63,6 +63,7 @@ exports.technique = function(req, res, next, id){
  * New technique
  */
 
+// TODO : selection on the techniques that are suggested
 exports.new = function(req, res){
   Form.list(function(err, techniques) {
     if (err) return res.render('500', {error : err.errors || err})
@@ -94,6 +95,32 @@ exports.newType = function(req, res){
   })
 }
 
+function saveFiles(files, cb) {
+
+    if (!files || (files.count)) return;
+    
+    for(key in files) {
+      var fileArray = files[key];
+      var filesObject = {};
+
+      if (!(fileArray instanceof Array)) {
+        var newPath = utils.saveFile(fileArray);
+        if (newPath)
+            filesObject[key] = newPath;
+      }
+      else if (fileArray instanceof Array) {
+        var pathArray = []
+        for (var i = 0; i < fileArray.length; i++) {
+          var newPath = utils.saveFile(fileArray[i]);
+          if (newPath)
+            pathArray.push(newPath);
+        }
+        filesObject[key] = pathArray;
+      }
+    }
+    return filesObject;
+  }
+
 /**
  * Create a technique
  */
@@ -102,63 +129,55 @@ exports.create = function (req, res) {
 
   var json = req.body
 
-    console.log("\njson")
-    console.log(json)
-    console.log("json\n")
-
-
   // TODO: handle previous and relationships
-  var previous = json.previous
-  delete json.previous
+  // var previous = json.previous
+  // delete json.previous
 
-  console.log(json.form)
-
-  //delete form
-  var form = json.form
+  // get Others model
+  var Model = utils.getModel(json.form);
   delete json.form
 
-  var content = utils.clone(json);
-  delete content.title
-  delete content.comments
-  delete content.tags
-  delete content.type
+  var others = _.omit(json, ["title", "comments", "tags", "type"]);
 
-  var Model = utils.getModel(form)
-  Model.create(content, function(err, test) {
-        if(err) console.log(err);
-        technique.others = test._id;
-  })
+  var files = saveFiles(req.files)
+  others.files = files
 
   var technique = new Technique(json)
   technique.user = req.user
 
   var phase = req.phase
+  technique.phase = phase._id;
 
-  // TODO: upload and save move to others
-  technique.uploadAndSave(req.files, function (err) {
-    if (err) return res.render('500', {error : err})
+  Model.create(others, function(err, result) {
+    if(err) console.log(err);
 
-    phase.addTechnique(technique, function (err) {
+    technique.others = result._id;
+
+    technique.save(function (err) {
       if (err) return res.render('500', {error : err})
-    })
+      
+      phase.addTechnique(technique, function (err) {
+        if (err) return res.render('500', {error : err});
+      });
 
-    if (previous instanceof Array) {
-      previous.forEach(function (idprev) {
-        var link = new Link({source : idprev, target : technique._id})
-        link.save(function (err) {
-          if (err) return res.render('500', {error : err})
-        }); 
-      })
-    } else if (typeof previous != "undefined") {
-      var link = new Link({source : previous, target : technique._id})
-      link.save(function (err) {
-        if (err) return res.render('500', {error : err})
-      }); 
-    }
-    
-    res.redirect('phases/'+ phase._id)
+      // if (previous instanceof Array) {
+      //   previous.forEach(function (idprev) {
+      //     var link = new Link({source : idprev, target : technique._id})
+      //     link.save(function (err) {
+      //       if (err) return res.render('500', {error : err})
+      //     }); 
+      //   })
+      // } else if (typeof previous != "undefined") {
+      //   var link = new Link({source : previous, target : technique._id})
+      //   link.save(function (err) {
+      //     if (err) return res.render('500', {error : err})
+      //   }); 
+      // }
+      
+      res.redirect('phases/'+ phase._id)
 
-  });
+    });
+  })
 }
 
 /**

@@ -23,28 +23,31 @@ var getTags = function (tags) {
 var setTags = function (tags) {
   return tags.split(',')
 }
-
 /**
  * Phase Schema
  */
 
-var PhaseSchema = new Schema({
-  type:       {type : Schema.ObjectId, ref : 'PhaseType'},
+var PhaseTypeSchema = new Schema({
   name:       {type : String, default : '', trim : true},
-  comments:   {type : String, default : '', trim : true},
+  comments:       {type : String, default : '', trim : true},
   tags:       {type: [], get: getTags, set: setTags},
-  techniques: [{type : Schema.ObjectId, ref : 'Technique'}]
+  techniques: [{type : Schema.ObjectId, ref : 'Form'}]
 })
 
 /**
  * Validations
  */
 
+PhaseTypeSchema.path('name').validate(function (name) {
+  return name.length > 0
+}, 'Phase name cannot be blank')
+
+
 /**
  * Methods
  */
 
-PhaseSchema.methods = {
+PhaseTypeSchema.methods = {
 
   /**
    * Add technique
@@ -54,20 +57,19 @@ PhaseSchema.methods = {
    * @api private
    */
 
-  addTechnique: function (technique, cb) {
-    this.techniques.push({
-      _id: technique._id
-    })
-
-    this.save(cb)
-  }
+  // addTechnique: function (technique, cb) {
+  //   this.techniques.push({
+  //     _id: technique._id
+  //   })
+  //   this.save(cb)
+  // }
 }
 
 /**
  * Statics
  */
 
-PhaseSchema.statics = {
+PhaseTypeSchema.statics = {
 
   /**
    * Find phase by id
@@ -79,7 +81,7 @@ PhaseSchema.statics = {
 
   load: function (id, cb) {
     this.findOne({ _id : id })
-      .populate('techniques')
+      // .populate('techniques')
       .exec(cb)
   },
 
@@ -92,17 +94,13 @@ PhaseSchema.statics = {
    * @api private
    */
 
-  list: function (options, cb) {
-    var criteria = options.criteria || {}
+  list: function (cb) {
 
-    this.find(criteria)
-      .populate({ path:'techniques', options: { sort: {'createdAt': 1}}})
-      // .limit(options.perPage)
-      .sort({'name': 1}) // sort by date
-      // .skip(options.perPage * options.page)
+    this.find()
+      // .populate('techniques')
       .exec(cb)
   }
 
 }
 
-mongoose.model('Phase', PhaseSchema)
+mongoose.model('PhaseType', PhaseTypeSchema)

@@ -269,8 +269,8 @@ function gcd(a, b) {
             var width =  (finishedAt - new Date(d.createdAt).getTime()) * scaleFactor;
             
             //make the activity 1% shorter to max 30min 
-            width-= Math.min(1800000, .1*width);
-            return width;
+            // width-= Math.min(1800000, .1*width);
+            return width ;
           }
 
         });

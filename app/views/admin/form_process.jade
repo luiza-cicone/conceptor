@@ -1,0 +1,31 @@
+extends ../layouts/default
+
+block content
+  - var action
+  if (isNew)
+    - action = '/' + aProcess._id
+  else
+    - action = '/'
+  
+  form.form-horizontal.confirm(method="post", action=action, enctype="multipart/form-data")
+    input(type='hidden', name='_csrf', value="#{csrf_token}")
+
+    .control-group
+      label.control-label(for='title') Name
+      .controls
+        input#title.input-xlarge(type='text', name="name", value=aProcess.name)
+
+    .control-group
+      label.control-label(for='desc') Comments
+      .controls
+        textarea#desc.input-xlarge(type='text', rows='3', name="comments")=aProcess.comments
+
+    .control-group
+      label.control-label(for='tags') Tags
+      .controls
+        input#tags(type='text', name="tags", value=aProcess.tags, placeholder='Enter the tags')
+    
+    .form-actions
+      button.btn.btn-primary(type='submit', value='save') Start
+      &nbsp;
+      a.btn(href="/admin/techniques", title="cancel") Cancel
