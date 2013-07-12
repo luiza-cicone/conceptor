@@ -64,6 +64,7 @@ ProcessSchema.statics = {
 
   load: function (id, cb) {
     this.findOne({ _id : id })
+      .populate({ path:'phases', options: { sort: {'order': 1}}})
       .exec(cb)
   },
 

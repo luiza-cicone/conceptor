@@ -13,7 +13,19 @@ block content
           i.icon-tags
           |  #{tag}
   br
-  p.text-error TODO : Graph image
+  if (defaultA)
+    //
+      p.text-error TODO : Graph image
+    img(src=aProcess.image)
+
+  if (!defaultA)
+    h4 Phases
+    hr
+    each phase in aProcess.phases
+      .phase
+        a.title(href='/phases/'+phase._id, title=phase.name) #{phase.name}
+        p=phase.comments
+      hr
 
   p
     br

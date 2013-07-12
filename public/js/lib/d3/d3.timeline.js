@@ -229,12 +229,12 @@ function gcd(a, b) {
             ;
 
           // add the label
-          var hasLabel = (typeof(datum.title) != "undefined");
+          var hasLabel = (typeof(datum.name) != "undefined");
           if (hasLabel) {
             staticElem.append('text')
               .attr("class", "timeline-label")
               .attr("transform", "translate("+ 5 +","+ (margin.top + (itemHeight + itemMargin.top + itemMargin.bottom) * yAxisMapping[index] - 6) +")")
-              .text(hasLabel ? datum.title : datum.id);
+              .text(hasLabel ? datum.name : datum.id);
           }
 
 /*

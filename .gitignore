@@ -2,4 +2,5 @@ backup/
 node_modules/
 .monitor
 config/config.js
+uploads/
 Makefile

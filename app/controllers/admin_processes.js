@@ -74,7 +74,7 @@ exports.process = function(req, res, next, id){
 
 exports.showOne = function(req, res) {
   console.log("show : ")
-  console.log(req.defaultA)
+  console.log(req.process)
   res.render('admin/show_default_process', {
     aProcess : req.process,
     title : req.process.name,

@@ -34,6 +34,7 @@ var ProcessTypeSchema = new Schema({
   name:      {type : String, default : '', trim : true},
   comments:  {type : String, default : '', trim : true},
   tags:      {type: [], get: getTags, set: setTags},
+  image:     {type : String, default : '', trim : true},
   phases:    {type : [Schema.Types.Mixed]}
 })
 
