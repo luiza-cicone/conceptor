@@ -6,8 +6,11 @@
 var mongoose = require('mongoose')
   , env = process.env.NODE_ENV || 'development'
   , config = require('../../config/config')[env]
+  , utils = require('../../lib/utils')
   , Schema = mongoose.Schema
+  , _ =  require('underscore')
 
+var util = require("util")
 /**
  * Getters
  */
@@ -92,9 +95,21 @@ TechniqueSchema.statics = {
    */
 
   load: function (id, cb) {
+
     this.findOne({ _id : id })
       .populate('user', 'name email')
-      .exec(cb)
+      .exec(function (err, technique) {
+        if (technique == null)  return cb(null, null);
+
+        var model = utils.getModel(technique.type)
+
+        // find others
+        model.findOne({_id: technique.others}, function(err, obj){
+          if (obj)
+            technique._doc.others = obj.toObject()
+          cb(err, technique);
+        })  
+      }) 
   },
 
   /**
@@ -106,13 +121,10 @@ TechniqueSchema.statics = {
    */
 
   list: function (options, cb) {
-    var criteria = options.criteria || {}
 
-    this.find(criteria)
+    this.find(options)
       .populate('user', 'name')
       .sort({'createdAt': 1}) // sort by date
-      .limit(options.perPage)
-      .skip(options.perPage * options.page)
       .exec(cb)
   }
 

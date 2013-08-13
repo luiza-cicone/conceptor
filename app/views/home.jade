@@ -1,6 +1,14 @@
 extends layouts/default
 
 block main
-  a.btn(href="/start") New Process
-  hr
-  a.btn(href="/processes") My processes
+  br
+  p.center
+    a.btn.btn-info(href="/start") 
+      img(src="img/new.png") 
+      br 
+      | Nouveau Processus
+    &nbsp;
+    a.btn.btn-info(href="/processes")
+      img(src="img/projects.png") 
+      br 
+      | Mes processus

@@ -1,0 +1,24 @@
+//
+  ------------------
+  View which lists all the processes (default or user) based on the value #{concrete}
+  ------------------
+  
+extends ../layouts/default
+
+block main
+  h1 #{title}
+
+block content
+  ul.breadcrumb
+    li.active Processes
+  .list-group
+    each process in processes
+      if (concrete == 1)
+        a.list-group-item.process(href='/processes/' + process._id, title=process.name)
+          h5.list-group-item-heading=process.name
+          p.list-group-item-text.ellipsis=process.comments
+      else
+        a.list-group-item.process(href='/' + process._id, title=process.name)
+          h5.list-group-item-heading=process.name
+          p.list-group-item-text.ellipsis=process.comments
+  

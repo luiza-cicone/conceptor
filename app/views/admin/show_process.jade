@@ -1,0 +1,51 @@
+//
+  ------------------
+  View which shows the details of a process (default or user) based on the value #{concrete}
+  ------------------
+
+extends ../layouts/default_d3
+
+block main
+  h1 #{process_item.name}
+    if (concrete)
+      a.btn.btn-info.pull-right(href='/processes/' + process_item._id + '/main') Graph
+    else
+      a.btn.btn-info.pull-right(href=process_item._id+"/new", title="instantiate") Instantiate
+
+
+block content
+  ul.breadcrumb
+    li
+      a(href="/processes") Processes
+    li.active #{process_item.name}
+
+  p
+    - var text = process_item.comments;
+    p!= text.replace(/</g, "&lt;").replace(/>/g, '&gt;').replace(/\n/g, '<br />').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
+
+  if (process_item.tags)
+    .tags
+      | Tags :&nbsp;
+      each tag in process_item.tags.split(',')
+        span.tag
+          i.icon-tags
+          |  #{tag}
+  br
+
+  if (!concrete)
+    #graph
+
+  h4 Phases
+  .list-group
+  each phase in process_item.phases
+    - var link
+    if (concrete)
+      -link='/processes/'+process_item._id+'/'+phase._id
+    else
+      -link='#'
+    a.list-group-item.phase(href=link, title=phase.name) 
+      h5.list-group-item-heading=phase.name
+      p.list-group-item-text=phase.comments
+
+  br
+  br

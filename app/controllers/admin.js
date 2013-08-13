@@ -20,7 +20,7 @@ exports.index = function(req, res){
  * New type of technique
  */
 
-exports.newTechnique = function(req, res){    
+exports.newTechnique = function(req, res){  
   res.render('admin/new_technique', {
     title: 'New type of technique',
     technique: new Form({})

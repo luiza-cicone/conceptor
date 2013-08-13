@@ -5,12 +5,37 @@ block main
   hr
 
 block content
- - var action = '/phases/'+phase._id
-  //
-    .alert
-      button.close(type='button', data-dismiss='alert') ×
-      strong Warning!
+  - var action 
+  if (technique.isNew)
+    action = '/phases/'+phase._id
+  else 
+    action = '/phases/'+phase._id+'/' + technique._id
+
   form.form-horizontal(method="post", action=action, enctype="multipart/form-data")
+    if (!technique.isNew)
+      input(type="hidden", name="_method", value="PUT")
+    else
+      input(type='hidden', name='createdAt', value=technique.createdAt)
     input(type='hidden', name='_csrf', value="#{csrf_token}")
-    input(type='hidden', name='form', value=form.name)
     input(type='hidden', name='type', value=form.id)
+
+    - var o = technique.others
+    if o && o.files
+      each val, key in o.files
+        .form-group
+          label.control-label.col-lg-2=key
+          .col-lg-10
+            each file in o.files[key]
+              - var filename = file.split('/')
+              - var index = filename.length - 1
+              i.icon-file
+              a(href=file) #{filename[index]}
+              br
+
+    .form-actions.pull-right
+      a.btn.btn-link(href='/phases/' + phase._id, title="cancel") Cancel
+      &nbsp;
+      button.btn.btn-success(type='submit', name='action', value='save') Save and Pause
+      &nbsp;
+      button.btn.btn-success(type='submit', name='action', value='finish') Save and Finish
+

@@ -32,9 +32,9 @@ var PhaseSchema = new Schema({
   type:       {type : Schema.ObjectId, ref : 'PhaseType'},
   name:       {type : String, default : '', trim : true},
   comments:   {type : String, default : '', trim : true},
-  tags:       {type: [], get: getTags, set: setTags},
+  tags:          {type: [], get: getTags, set: setTags},
   techniques: [{type : Schema.ObjectId, ref : 'Technique'}],
-  order:      {type : Number}
+  order:         {type : Number}
 })
 
 /**
@@ -94,13 +94,9 @@ PhaseSchema.statics = {
    */
 
   list: function (options, cb) {
-    var criteria = options.criteria || {}
 
-    this.find(criteria)
+    this.find(options)
       .populate({ path:'techniques', options: { sort: {'createdAt': 1}}})
-      // .limit(options.perPage)
-      .sort({'order': 1}) // sort by date
-      // .skip(options.perPage * options.page)
       .exec(cb)
   }
 

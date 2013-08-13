@@ -190,16 +190,16 @@ var initializeTabs = function (tabs) {
 
 // Twitter bootstrap-friendly HTML boilerplate for standard inputs
 jsonform.fieldTemplate = function(inner) {
-  return '<div class="control-group jsonform-error-<%= keydash %>' +
+  return '<div class="form-group jsonform-error-<%= keydash %>' +
     // '<%= elt.htmlClass ? " " + elt.htmlClass : "" %>' +
     '<%= (node.schemaElement && node.schemaElement.required && (node.schemaElement.type !== "boolean") ? " jsonform-required" : "") %>' +
     '<%= (node.formElement && node.formElement.readonly ? " jsonform-readonly" : "") %>' +
     '<%= (node.disabled ? " jsonform-disabled" : "") %>' +
     '">' +
     '<% if (node.title && !elt.notitle) { %>' +
-      '<label class="control-label" for="<%= node.id %>"><%= node.title %></label>' +
+      '<label class="control-label col-lg-2" for="<%= node.id %>"><%= node.title %></label>' +
     '<% } %>' +
-    '<div class="controls <%=elt.htmlClass%>">' +
+    '<div class="<%=elt.htmlClass%>">' +
       '<% if (node.prepend || node.append) { %>' +
       '<div class="<% if (node.prepend) { %>input-prepend<% } %>' +
         '<% if (node.append) { %> inpfut-append<% } %>">' +
@@ -233,7 +233,7 @@ var fileDisplayTemplate = '<div class="_jsonform-preview">' +
 var inputFieldTemplate = function (type) {
   return {
     'template': '<input type="' + type + '" ' +
-      '<%= (fieldHtmlClass ? "class=\'" + fieldHtmlClass + "\' " : "") %>' +
+      'class="form-control<%= (fieldHtmlClass ? " " + fieldHtmlClass : "") %>"' +
       'name="<%= node.name %>" value="<%= escape(value) %>" id="<%= id %>"' +
       '<%= (node.disabled? " disabled" : "")%>' +
       '<%= (node.formElement && node.formElement.readonly ? " readonly=\'readonly\'" : "") %>' +
@@ -268,7 +268,7 @@ jsonform.elementTypes = {
   'week': inputFieldTemplate('week'),
   'range': {
     'template': '<input type="range" ' +
-      '<%= (fieldHtmlClass ? "class=\'" + fieldHtmlClass + "\' " : "") %>' +
+      'class="form-control<%= (fieldHtmlClass ? " " + fieldHtmlClass : "") %>"' +
       'name="<%= node.name %>" value="<%= escape(value) %>" id="<%= id %>"' +
       '<%= (node.disabled? " disabled" : "")%>' +
       ' min=<%= range.min %>' +
@@ -308,7 +308,7 @@ jsonform.elementTypes = {
   },
   'color':{
     'template':'<input type="text" ' +
-      '<%= (fieldHtmlClass ? "class=\'" + fieldHtmlClass + "\' " : "") %>' +
+      'class="form-control<%= (fieldHtmlClass ? " " + fieldHtmlClass : "") %>"' +
       'name="<%= node.name %>" value="<%= escape(value) %>" id="<%= id %>"' +
       '<%= (node.disabled? " disabled" : "")%>' +
       '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
@@ -324,7 +324,7 @@ jsonform.elementTypes = {
   },
   'textarea':{
     'template':'<textarea id="<%= id %>" name="<%= node.name %>" ' +
-      '<%= (fieldHtmlClass ? "class=\'" + fieldHtmlClass + "\' " : "") %>' +
+      'class="form-control<%= (fieldHtmlClass ? " " + fieldHtmlClass : "") %>"' +
       'style="height:<%= elt.height || "150px" %>; <%= (elt.width ? "width:" + elt.width : "") %>;"' +
       '<%= (node.disabled? " disabled" : "")%>' +
       '<%= (node.formElement && node.formElement.readonly ? " readonly=\'readonly\'" : "") %>' +
@@ -454,33 +454,12 @@ jsonform.elementTypes = {
     }
   },
   'file':{
-    'template':
-    '<div class="fileupload fileupload-new" data-provides="fileupload">' + 
-          '<span class="btn btn-file">'+
-            '<span class="fileupload-new">Select file</span>'+
-            '<span class="fileupload-exists">Change</span>' +
-            '<input class="input-file" id="<%= id %>" name="<%= node.name %>" type="file" ' +
-              '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
-            '/>' +
-          '</span>'+
-          '<div class="uneditable-input' +
-          '<%= (fieldHtmlClass ? " " + fieldHtmlClass : "") %>' +
-          '">'+
-            '<i class="icon-file fileupload-exists"></i>'+
-            '<span class="fileupload-preview"></span>'+
-            '<a href="#" class="close fileupload-exists" data-dismiss="fileupload"">×</a>' +
-          '</div>'+
-      '</div>',
+    'template':'<input id="<%= id %>" name="<%= node.name %>" type="file" ' +
+      '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
+      '/>',
     'fieldtemplate': true,
     'inputfield': true
   },
-  // 'file':{
-  //   'template':'<input class="input-file" id="<%= id %>" name="<%= node.name %>" type="file" ' +
-  //     '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
-  //     '/>',
-  //   'fieldtemplate': true,
-  //   'inputfield': true
-  // },
   'file-hosted-public':{
     'template':'<span><% if (value && (value.type||value.url)) { %>'+fileDisplayTemplate+'<% } %><input class="input-file" id="_transloadit_<%= id %>" type="file" name="<%= transloaditname %>" /><input data-transloadit-name="_transloadit_<%= transloaditname %>" type="hidden" id="<%= id %>" name="<%= node.name %>" value=\'<%= escape(JSON.stringify(node.value)) %>\' /></span>',
     'fieldtemplate': true,
@@ -640,7 +619,7 @@ jsonform.elementTypes = {
   },
   'select':{
     'template':'<select name="<%= node.name %>" id="<%= id %>"' +
-      '<%= (fieldHtmlClass ? " class=\'" + fieldHtmlClass + "\'" : "") %>' +
+      'class="form-control<%= (fieldHtmlClass ? " " + fieldHtmlClass : "") %>"' +
       '<%= (node.disabled? " disabled" : "")%>' +
       '<%= (node.schemaElement && node.schemaElement.required ? " required=\'required\'" : "") %>' +
       '> ' +
@@ -783,10 +762,10 @@ jsonform.elementTypes = {
     }
   },
   'array': {
-    'template': '<div id="<%= id %>"><ul class="_jsonform-array-ul" style="list-style-type:none;"><%= children %></ul>' +
+    'template': '<div id="<%= id %>"><ul class="list-group _jsonform-array-ul"><%= children %></ul>' +
       '<span class="_jsonform-array-buttons">' +
-        '<a href="#" class="btn _jsonform-array-addmore"><i class="icon-plus-sign" title="Add new"></i></a> ' +
-        '<a href="#" class="btn _jsonform-array-deletelast"><i class="icon-minus-sign" title="Delete last"></i></a>' +
+        '<a href="#" class="btn btn-default _jsonform-array-addmore"><i class="icon-plus-sign" title="Add new"></i></a> ' +
+        '<a href="#" class="btn btn-default _jsonform-array-deletelast"><i class="icon-minus-sign" title="Delete last"></i></a>' +
       '</span>' +
       '</div>',
     'fieldtemplate': true,
@@ -795,13 +774,13 @@ jsonform.elementTypes = {
       if ($('').sortable) {
         // Insert a "draggable" icon
         // floating to the left of the main element
-        return '<li data-idx="<%= node.childPos %>">' +
+        return '<li class="list-group-item" data-idx="<%= node.childPos %>">' +
           '<span class="draggable line"><i class="icon-list" title="Move item"></i></span>' +
           inner +
           '</li>';
       }
       else {
-        return '<li data-idx="<%= node.childPos %>">' +
+        return '<li class="list-group-item" data-idx="<%= node.childPos %>">' +
           inner +
           '</li>';
       }
@@ -929,8 +908,8 @@ jsonform.elementTypes = {
         '<%= children %>' +
       '</div>' +
       '</div>' +
-      '<a href="#" class="btn _jsonform-array-addmore"><i class="icon-plus-sign" title="Add new"></i></a> ' +
-      '<a href="#" class="btn _jsonform-array-deleteitem"><i class="icon-minus-sign" title="Delete item"></i></a></div>',
+      '<a href="#" class="btn btn-default _jsonform-array-addmore"><i class="icon-plus-sign" title="Add new"></i></a> ' +
+      '<a href="#" class="btn btn-default _jsonform-array-deleteitem"><i class="icon-minus-sign" title="Delete item"></i></a></div>',
     'fieldtemplate': true,
     'array': true,
     'childTemplate': function (inner) {
@@ -1129,10 +1108,10 @@ jsonform.elementTypes = {
       '</fieldset>'
   },
   'submit':{
-    'template':'<input type="submit" <% if (id) { %> id="<%= id %>" <% } %> class="btn btn-primary <%= elt.htmlClass?elt.htmlClass:"" %>" value="<%= value || node.title %>"<%= (node.disabled? " disabled" : "")%>/>'
+    'template':'<input type="submit" <% if (id) { %> id="<%= id %>" <% } %> class="btn btn-success <%= elt.htmlClass?elt.htmlClass:"" %>" value="<%= value || node.title %>"<%= (node.disabled? " disabled" : "")%>/>'
   },
   'button':{
-    'template':' <button <% if (id) { %> id="<%= id %>" <% } %> class="btn <%= elt.htmlClass?elt.htmlClass:"" %>"><%= node.title %></button> '
+    'template':' <button <% if (id) { %> id="<%= id %>" <% } %> class="btn btn-default<%= elt.htmlClass?elt.htmlClass:"" %>"><%= node.title %></button> '
   },
   'actions':{
     'template':'<div class="form-actions <%= elt.htmlClass?elt.htmlClass:"" %>"><%= children %></div>'

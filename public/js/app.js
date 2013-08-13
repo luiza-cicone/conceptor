@@ -15,15 +15,18 @@ $(document).ready(function () {
     if(danger) {
       e.preventDefault();
       var self = this;
-      var msg = 'Are you sure?';
-      bootbox.confirm(msg, 'cancel', 'Yes! I am sure', function (action) {
-        if (action) {
+
+      if (!$('#myModal').length)
+        $( "body" ).append('<div class="modal fade" id="myModal"><div class="modal-dialog"><div class="modal-content"><div class="modal-body"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title">Are you sure ?</h4></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-danger confirm-delete">Delete</button></div></div></div></div>');
+      
+      $('#myModal').modal('show')
+
+      $('.confirm-delete').click(function(action) {
+          $('#myModal').modal('hide');
           $(self).unbind('submit');
           event.action = 'delete'
           $(self).trigger('submit');
-
-        }
-      });
+      })
     }
   });
 
@@ -38,8 +41,6 @@ $(document).ready(function () {
     }
   });  
 
-  $('#tags').tagsInput({
-    class: "input-xlarge"
-  });
+  $('#tags').tagsInput({});
 
 });

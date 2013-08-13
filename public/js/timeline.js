@@ -1,3 +1,4 @@
+var minInterval = 900000;
 
 function lcm_rec(i, array) {
   var a=array[i];
@@ -69,6 +70,7 @@ function gcd(a, b) {
       ;
 
     function timeline (gParent) {
+
       var g = gParent.append("g");
       var gParentSize = {top:0, width:0};
 
@@ -98,6 +100,9 @@ function gcd(a, b) {
               datum.techniques.forEach(function (time, i) {
                 if (new Date(time.createdAt).getTime() < minTime || minTime == 0)
                   minTime = new Date(time.createdAt).getTime();
+                if (!time.finishedAt) {
+                  maxTime = Math.max(Date.now(), new Date(time.createdAt).getTime()*1 + minInterval);
+                }
                 if (new Date(time.finishedAt).getTime() > maxTime)
                   maxTime = new Date(time.finishedAt).getTime();
               });
@@ -147,7 +152,10 @@ function gcd(a, b) {
             data.forEach(function(activity, activityIndex) {
 
               var createdAt = new Date(activity.createdAt).getTime()
-              var finishedAt = new Date(activity.finishedAt).getTime()
+              var finishedAt;
+              if (!activity.finishedAt)
+                finishedAt = Math.max(Date.now(), new Date(activity.createdAt).getTime()*1 + minInterval);
+              else finishedAt = new Date(activity.finishedAt).getTime()
 
               voisins.splice(activityIndex, 0, 1);
               finished.push({no : activityIndex, finishedAt : finishedAt})
@@ -163,8 +171,11 @@ function gcd(a, b) {
                 voisins.splice(finished[j].no, 1, no)
               }
             });
+            var length;
 
-            var length = lcm(voisins);
+            if (voisins.length > 1)
+              length = lcm(voisins);
+            else length = 1;
 
             var positionArray = [];
             var indexArray = [];
@@ -175,8 +186,10 @@ function gcd(a, b) {
 
             data.forEach(function(activity, activityIndex) {
               var createdAt = new Date(activity.createdAt).getTime()
-              var finishedAt = new Date(activity.finishedAt).getTime()
-
+              var finishedAt;
+              if (!activity.finishedAt)
+                finishedAt = Math.max(Date.now(), new Date(activity.createdAt).getTime()*1 + minInterval);
+              else finishedAt = new Date(activity.finishedAt).getTime()
               var increment = length/voisins[activityIndex];
 
               for (j = 0; j < length; j = j+increment) {
@@ -204,6 +217,9 @@ function gcd(a, b) {
               .attr("width", getElementWidth)
               .attr("height", getElementHeight)
               .attr("class", getId)
+              .attr("id", getId)
+              .attr("data-original-title", getTitle)
+              .attr("data-container", "body")
               .style("fill", colorCycle(index))
               .on("mousemove", function (d, i) {
                 hover(d, index, datum);
@@ -220,25 +236,25 @@ function gcd(a, b) {
             ;
 
           // add the label
-          var hasLabel = (typeof(datum.title) != "undefined");
+          var hasLabel = (typeof(datum.name) != "undefined");
           if (hasLabel) {
             staticElem.append('text')
               .attr("class", "timeline-label")
               .attr("transform", "translate("+ 5 +","+ (margin.top + (itemHeight + itemMargin.top + itemMargin.bottom) * yAxisMapping[index] - 6) +")")
-              .text(hasLabel ? datum.title : datum.id);
+              .text(hasLabel ? datum.name : datum.id);
           }
 
-/*
-          // add icon
-          if (typeof(datum.icon) != "undefined") {
-            staticElem.append('image')
-              .attr("class", "timeline-label")
-              .attr("transform", "translate("+ 0 +","+ (margin.top + (itemHeight + (itemMargin.top + itemMargin.bottom)) * yAxisMapping[index])+")")
-              .attr("xlink:href", datum.icon)
-              .attr("width", margin.left)
-              .attr("height", itemHeight);
-          }
-*/
+
+          // // add icon
+          // if (typeof(datum.icon) != "undefined") {
+          //   staticElem.append('image')
+          //     .attr("class", "timeline-label")
+          //     .attr("transform", "translate("+ 0 +","+ (margin.top + (itemHeight + (itemMargin.top + itemMargin.bottom)) * yAxisMapping[index])+")")
+          //     .attr("xlink:href", datum.icon)
+          //     .attr("width", margin.left)
+          //     .attr("height", itemHeight);
+          // }
+
           function getStackPosition(d, i) {
 
             if (stacked) {
@@ -252,11 +268,16 @@ function gcd(a, b) {
           }
 
           function getElementWidth(d, i) {
-            var width =  (new Date(d.finishedAt).getTime() - new Date(d.createdAt).getTime()) * scaleFactor;
+            var finishedAt;
+              if (!d.finishedAt)
+                finishedAt = Math.max(Date.now(), new Date(d.createdAt).getTime()*1 + minInterval);
+              else finishedAt = new Date(d.finishedAt).getTime()
+
+            var width =  (finishedAt - new Date(d.createdAt).getTime()) * scaleFactor;
             
             //make the activity 1% shorter to max 30min 
-            width-= Math.min(1800000, .1*width);
-            return width;
+            // width-= Math.min(1800000, .1*width);
+            return width ;
           }
 
         });
@@ -277,18 +298,21 @@ function gcd(a, b) {
             var sourceRect = elements.selectAll(".id" + datum.source);
             var targetRect = elements.selectAll(".id" + datum.target);
 
-            var components = d3.transform(elements.attr("transform"));
+            if (sourceRect != null && targetRect != null) { 
 
-            var x1 = ((1*sourceRect.attr("x")) + (sourceRect.attr("width") * 1)) * components.scale[0] + components.translate[0];
-            var y1 = 1*sourceRect.attr("y") + 1*sourceRect.attr("height")/2;
-            var x2 = (1*targetRect.attr("x") )* components.scale[0] + components.translate[0];
-            var y2 = 1*targetRect.attr("y") + 1*targetRect.attr("height")/2;
+              var components = d3.transform(elements.attr("transform"));
+
+              var x1 = ((1*sourceRect.attr("x")) + (sourceRect.attr("width") * 1)) * components.scale[0] + components.translate[0];
+              var y1 = 1*sourceRect.attr("y") + 1*sourceRect.attr("height")/2;
+              var x2 = (1*targetRect.attr("x") )* components.scale[0] + components.translate[0];
+              var y2 = 1*targetRect.attr("y") + 1*targetRect.attr("height")/2;
 
 
-            newLinks.push({
-                source : {x: x1, y: y1}, 
-                target : {x: x2, y: y2}
-              });
+              newLinks.push({
+                  source : {x: x1, y: y1}, 
+                  target : {x: x2, y: y2}
+                });
+            } 
           });
         });
 
@@ -325,12 +349,12 @@ function gcd(a, b) {
             .attr("stroke-width", 1)
             .attr("stroke", "#333")
             .attr("fill", "none")
-            .attr("marker-start", "url(#Marker)")
-            .attr("marker-end", "url(#Marker)")
+            .attr("marker-start", "url(#marker)")
+            .attr("marker-end", "url(#marker)")
 
       var zoomVar = d3.behavior.zoom()
         .x(xScale)
-        // .scaleExtent([.02, 30])
+        .scaleExtent([.02, 30])
         .on("zoom", zoom);
 
       function zoom() {
@@ -353,6 +377,7 @@ function gcd(a, b) {
       }
 
       var gSize = g[0][0].getBoundingClientRect();
+      
       setHeight();
 
       function getXPos(d, i) {
@@ -361,6 +386,10 @@ function gcd(a, b) {
 
       function getId(d, i) {
         return "id" + d._id;
+      }
+
+      function getTitle(d, i) {
+        return d.title;
       }
 
       function setHeight() {

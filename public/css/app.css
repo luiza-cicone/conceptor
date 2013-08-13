@@ -1,66 +1,40 @@
-.container {
-  max-width: 900px;
+body.full .container {
+  width 100%;
+  max-width: none;
+  margin: 1px;
 }
 
-.navbar-fixed-top {
-  margin-bottom: 20px;
+.navbar {
   position: static;
+  margin-bottom: 0px;
+  border:1px solid #d4d4d4;
+  -webkit-box-shadow:0 1px 4px rgba(0,0,0,0.065);
+  -moz-box-shadow:0 1px 4px rgba(0,0,0,0.065);
+  box-shadow:0 1px 4px rgba(0,0,0,0.065)
 }
 
-.navbar-inner{
-  padding: 5px;
-}
-
-.date {
-  font-size: 11px;
-  color: #aaa;
-}
-
-.author {
-  color: #aaa;
-}
-
-h1 {
-  font-size: 22px;
-}
-
-.title {
-  padding: 5px 0 15px 0;
-  display: block;
-  font-size: 18px;
-}
-/*
-.article, .comment {
-  padding: 15px 0;
-  border-top: 1px solid #e8e8e8;
-}
-
-.main-head {
-  text-align: center;
-  padding: 20px;
-}
-
-.btn {
-  outline: none !important;
-}
-
-*/
 
 .center {
   text-align: center;
 }
 
-.tags {
-  margin-top: 10px;
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
 }
 
-a.tag {
-  margin: 0 10px 0 0;
+input[type="file"] {
+  margin : 1px;
 }
 
-.error {
-  color: #FF2602;
-}
+/*
+Graph
+*/
+
 
 .axis line,
 .axis path {
@@ -78,11 +52,41 @@ a.tag {
   fill: #999;
   anchor
 }
+/*
+----
+*/
 
-#canvas {
-  width: 940px;
+circle {
+  fill : #333;
+}
+
+svg {
   border: 1px solid #ccc;
 }
-.form-horizontal .no-indent {
-  margin-left: 0 ;
+
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+.node-circle {
+  fill: #5bc0de;
+  stroke: #46b8da;
+}
+
+.node-circle:hover {
+  fill: #39b3d7;
+}
+
+text {
+  fill: #333;
+  text-align: center;
+  font-size: 10px;
+}
+
+text.shadow {
+  stroke: #000;
+  stroke-width: 2px;
+  stroke-opacity: .7;
 }

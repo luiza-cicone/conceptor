@@ -31,7 +31,8 @@ var PhaseTypeSchema = new Schema({
   name:       {type : String, default : '', trim : true},
   comments:       {type : String, default : '', trim : true},
   tags:       {type: [], get: getTags, set: setTags},
-  techniques: [{type : Schema.ObjectId, ref : 'Form'}]
+  techniques: [{type : Schema.ObjectId, ref : 'Form'}],
+  order:         {type : Number}
 })
 
 /**
@@ -81,7 +82,7 @@ PhaseTypeSchema.statics = {
 
   load: function (id, cb) {
     this.findOne({ _id : id })
-      // .populate('techniques')
+      .populate('techniques')
       .exec(cb)
   },
 
@@ -94,10 +95,11 @@ PhaseTypeSchema.statics = {
    * @api private
    */
 
-  list: function (cb) {
-
-    this.find()
-      // .populate('techniques')
+  list: function (options, cb) {
+    console.log(options)
+    this.find(options)
+      .populate('techniques')
+      .sort('order')
       .exec(cb)
   }
 

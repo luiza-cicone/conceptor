@@ -25,6 +25,7 @@ module.exports = function (app, passport, auth) {
   var techniques = require('../app/controllers/techniques')
   var forms = require('../app/controllers/forms')
   var phases = require('../app/controllers/phases')
+  var processes = require('../app/controllers/processes')
 
   //
   // admin routes
@@ -47,19 +48,20 @@ module.exports = function (app, passport, auth) {
 
   app.param('type', admin.technique)
 
-  //
-  // phases 
-  //
+/*
+  * phases 
+  */ 
 
   // graph
-  app.get('/graph', phases.graph)
+  // app.get('/main', phases.graph)
+  app.get('/graph', admin_processes.graph2)
 
   // techniques
   app.get   ('/phases', phases.index)
   app.get   ('/phases/:phase_id', phases.show)
 
-  app.get   ('/phases/:phase_id/new', auth.requiresLogin, techniques.new)
-  app.get   ('/phases/:phase_id/new/:type', auth.requiresLogin, techniques.newType)
+  app.get   ('/processes/:process_id/new', auth.requiresLogin, techniques.new)
+  app.get   ('/processes/:process_id/:phase_id/new/:type', auth.requiresLogin, techniques.newType)
   app.post  ('/phases/:phase_id', auth.requiresLogin, techniques.create)
 
   app.get   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.show)
@@ -78,6 +80,10 @@ module.exports = function (app, passport, auth) {
 
   app.get  ('/processes', admin_processes.list);
   app.get  ('/processes/:process_id', admin_processes.showOne);
+  app.get  ('/processes/:process_id/main', processes.graph);
+
+  app.get   ('/processes/:process_id/:phase_id', phases.show)
+
 
   app.get  ('/:default_process_id', admin_processes.showOne);
   app.get  ('/:default_process_id/new', admin_processes.new);

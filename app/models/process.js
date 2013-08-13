@@ -36,8 +36,10 @@ var ProcessSchema = new Schema({
   tags:       {type: [], get: getTags, set: setTags},
   createdAt:  {type : Date, default : Date.now},
   finishedAt: {type : Date},
-  phases:     [{type : Schema.ObjectId, ref : 'Phase'}]
+  phases:     [{type : Schema.ObjectId, ref : 'Phase'}],
+  links:     [{type : Schema.ObjectId, ref : 'Link'}]
 })
+
 
 /**
  * Methods
@@ -54,22 +56,9 @@ ProcessSchema.methods = {
 
 ProcessSchema.statics = {
 
-  /**
-   * Find technique by id
-   *
-   * @param {ObjectId} id
-   * @param {Function} cb
-   * @api private
-   */
-
-  load: function (id, cb) {
-    this.findOne({ _id : id })
-      .populate({ path:'phases', options: { sort: {'order': 1}}})
-      .exec(cb)
-  },
 
   /**
-   * List techniques
+   * List concreete processes
    *
    * @param {Object} options
    * @param {Function} cb
@@ -81,8 +70,23 @@ ProcessSchema.statics = {
     this.find()
       // .sort({'createdAt': 1}) // sort by date
       .exec(cb)
+  },
+
+  /**
+   * Find process by id
+   *
+   * @param {ObjectId} id
+   * @param {Function} cb
+   * @api private
+   */
+
+  load: function (id, cb) {
+    this.findOne({ _id : id })
+      .populate({ path:'phases', options: { sort: {'order': 1} } })
+      .populate({ path:'links' })
+      .exec(cb);
   }
 
-}
 
+}
 mongoose.model('Process', ProcessSchema)

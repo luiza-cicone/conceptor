@@ -4,9 +4,17 @@ block main
   h1 Techniques for #{phase.name}
 
 block content
+  ul.breadcrumb
+    li
+      a(href="/processes") Processes
+    if(process_item)
+      li
+        a(href="/processes/" + process_item._id) #{process_item.name}
+    li.active #{phase.name}
+
   each technique in techniques
     .technique
-      a.title(href='/phases/'+phase._id+'/'+technique._id, title=technique.title) #{technique.title}
+      a(href='/phases/'+phase._id+'/'+technique._id, title=technique.title) #{technique.title}
       p=technique.body
       .author
         span= formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
@@ -15,7 +23,6 @@ block content
           span.tags
             span Tags :&nbsp;
             each tag in technique.tags.split(',')
-              a.tag(href="/tags/"+tag)
-                i.icon-tags
-                |  #{tag}
+              i.icon-tags
+              a.tag(href="/tags/"+tag) #{tag}
     hr

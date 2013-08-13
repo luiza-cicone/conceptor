@@ -3,29 +3,31 @@ extends ../layouts/default
 block content
   - var action
   if (isNew)
-    - action = '/' + aProcess._id
+    - action = '/' + process_item._id
   else
     - action = '/'
   
   form.form-horizontal.confirm(method="post", action=action, enctype="multipart/form-data")
     input(type='hidden', name='_csrf', value="#{csrf_token}")
 
-    .control-group
-      label.control-label(for='title') Name
-      .controls
-        input#title.input-xlarge(type='text', name="name", value=aProcess.name)
+    .form-group
+      label.control-label.col-lg-2(for='title') Name
+      .col-lg-10
+        input#title.form-control(type='text', name="name", value='Instance of ' + process_item.name)
 
-    .control-group
-      label.control-label(for='desc') Comments
-      .controls
-        textarea#desc.input-xlarge(type='text', rows='3', name="comments")=aProcess.comments
+    .form-group
+      label.control-label.col-lg-2(for='desc') Comments
+      .col-lg-10
+        textarea#desc.form-control(type='text', rows='7', name="comments")=process_item.comments
 
-    .control-group
-      label.control-label(for='tags') Tags
-      .controls
-        input#tags(type='text', name="tags", value=aProcess.tags, placeholder='Enter the tags')
+    .form-group
+      label.control-label.col-lg-2(for='tags') Tags
+      .col-lg-10
+        input#tags.form-control(type='text', name="tags", value=process_item.tags, placeholder='Enter the tags')
     
     .form-actions
-      button.btn.btn-primary(type='submit', value='save') Start
-      &nbsp;
-      a.btn(href="/admin/techniques", title="cancel") Cancel
+      .pull-right
+        a.btn.btn-link(href="/admin/techniques", title="cancel") Cancel
+        &nbsp;
+        button.btn.btn-default(type='submit', value='save') Start process
+

@@ -5,20 +5,28 @@
 
 var mongoose = require('mongoose')
   , Phase = mongoose.model('PhaseType')
+  , ConcretePhase = mongoose.model('Phase')
   , Process = mongoose.model('ProcessType')
-  , ProcessI = mongoose.model('Process')
+  , ConcreteProcess = mongoose.model('Process')
   , _ = require('underscore')
 
+/*
+ * Home
+ */
 
 exports.index = function(req, res) {
   res.render('home', {})
 }
 
+/*
+ * List all user processes 
+ */
 exports.list = function(req, res) {
-  ProcessI.list(function(err, processes) {
+  ConcreteProcess.list(function(err, processes) {
     if (err) 
       return res.render('500', {error : err.errors || err})
-      res.render('admin/list_default_processes', {
+
+      res.render('admin/list_processes', {
         title : "Processes",
         processes : processes,
         concrete : 1
@@ -27,7 +35,7 @@ exports.list = function(req, res) {
 }
 
 /**
- * List all types of default processes
+ * List all default processes for starting a new
  */
 
 exports.listAll = function(req, res) {
@@ -36,8 +44,8 @@ exports.listAll = function(req, res) {
     if (err) 
       return res.render('500', {error : err.errors || err})
 
-      res.render('admin/list_default_processes', {
-        title : "Choose a process",
+      res.render('admin/list_processes', {
+        title : "Choose a base process",
         processes : processes
       })
 
@@ -45,64 +53,97 @@ exports.listAll = function(req, res) {
 }
 
 /**
- * Find phase by id
+ * Find default process by id
  */
 
 exports.default_process = function(req, res, next, id){
   Process.load(id, function (err, process) {
     if (err) return next(err)
     if (!process) return next(new Error('Failed to load process ' + id))
-    req.process = process
-    req.defaultA = 1;
-    next()
-  })
-}
-
-exports.process = function(req, res, next, id){
-  ProcessI.load(id, function (err, process) {
-    if (err) return next(err)
-    if (!process) return next(new Error('Failed to load process ' + id))
-    req.process = process
-    req.defaultA = 0;
+    req.process_item = process
+    req.concrete = 0;
     next()
   })
 }
 
 /**
- * Show details of one default process
+ * Find user process by id
  */
 
-exports.showOne = function(req, res) {
-  console.log("show : ")
-  console.log(req.process)
-  res.render('admin/show_default_process', {
-    aProcess : req.process,
-    title : req.process.name,
-    defaultA : req.defaultA
+exports.process = function(req, res, next, id){
+  ConcreteProcess.load(id, function (err, process) {
+    if (err) return next(err)
+    if (!process) return next(new Error('Failed to load process ' + id))
+    req.process_item = process
+    req.concrete = 1;
+    next()
   })
 }
 
+/**
+ * Show details of process
+ */
+
+exports.showOne = function(req, res) {
+  
+  res.render('admin/show_process', {
+    concrete : req.concrete,
+    process_item : req.process_item
+  })
+}
+
+
+/**
+ * New concrete process
+ */
 exports.new = function(req, res) {
-  var p = new ProcessI({})
-  p = _.extend(req.process)
+
+  var p = new ConcreteProcess({});
+  p = _.extend(p, req.process_item)
+
+  console.log("\nnew : ")
+  console.log(p)
+
   res.render('admin/new_process', {
     title: 'New process',
-    aProcess: p,
+    process_item: p,
     isNew : 1
   })
 }
 
 exports.create = function(req, res) {
-  var p = new ProcessI({});
-  p = _.extend(p, req.aProcess);
+  var p = new ConcreteProcess({});
   p = _.extend(p, req.body)
-  
-  console.log(p)
-    
-  p.save (function (err) {
+
+  p.save (function (err, concreteProcess) {
     if (err) return res.render('500', {error : err});
+    var phases = [];
+    req.process_item.phases.forEach(function(phase, err){
+      // TODO : save other params
+      var newphase = {"name" : phase.name, "type" : phase._id}
+      phases.push(newphase)
+    })
+    // save all new phases for the concrete proc
+    ConcretePhase.create(phases, function(err) {
+      if (err) return res.render('500', {error : err});
+
+      var phasesID = [];
+      for (var i = 1;i < arguments.length;i ++)
+        phasesID.push(arguments[i]._id);
+      concreteProcess = _.extend(concreteProcess, {phases : phasesID});
+
+      console.log("\n\n\nconcreteProcess");
+      console.log(concreteProcess);
+      concreteProcess.save(function(err) {
+        if (err) return res.render('500', {error : err});
+      });
+    })
     res.redirect('processes/' + p._id)
   })
+}
+
+exports.graph2 = function(req, res){
+  res.render('graph2', {})
 }
 
 exports.insertA = function(req, res) {  

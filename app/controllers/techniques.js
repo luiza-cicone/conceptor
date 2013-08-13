@@ -5,10 +5,13 @@
 
 var mongoose = require('mongoose')
     , Technique = mongoose.model('Technique')
+    , PhaseType = mongoose.model('PhaseType')
+    , Process = mongoose.model('Process')
     , Link = mongoose.model('Link')
     , Form = mongoose.model('Form')
     , _ = require('underscore')
     , utils = require('../../lib/utils')
+    , _str = require('underscore.string');
 
 /**
  * List of Techniques
@@ -59,20 +62,38 @@ exports.technique = function(req, res, next, id){
 }
 
 
+exports.getOne = function(id, next){
+  Technique.load(id, function (err, technique) {
+    if (err) return next(err)
+    next(technique)
+  })
+}
+
 /*
  * New technique
  */
 
 // TODO : selection on the techniques that are suggested
 exports.new = function(req, res){
-  Form.list(function(err, techniques) {
-    if (err) return res.render('500', {error : err.errors || err})
-    res.render('techniques/new', {
-      title: 'List of Techniques',
-      techniques: techniques,
-      phase : req.phase
+
+    var abstracts = [];
+
+    var concretes = req.process_item.phases;
+    for(i = 0; i <concretes.length; i ++) {
+      abstracts.push(concretes[i].type)
+    }
+
+    var phases = []
+    PhaseType.list({_id : {$in : abstracts}}, function(err, abstracts) {
+      for(i = 0; i <concretes.length; i ++) {
+        phases.push({_id : concretes[i]._id, name: concretes[i].name, techniques : abstracts[i].techniques})
+      }
+      res.render('techniques/new', {
+        title: 'List of Techniques',
+        phases: phases,
+        process_item: req.process_item
+      })
     })
-  })
 }
 
 /**
@@ -87,16 +108,19 @@ exports.newType = function(req, res){
     if (err || !form)
       return res.render('500', {error : "Failed to load form."})
 
+    var technique = new Technique({}) 
+    technique.createdAt = Date.now
+
     res.render('form', {
-      title: "New technique",
+      title: 'New ' + form.name,
       form: form,
+      technique: technique,
       phase: req.phase
     });
   })
 }
 
 function saveFiles(files, cb) {
-
     if (!files || (files.count)) return;
     
     for(key in files) {
@@ -115,7 +139,9 @@ function saveFiles(files, cb) {
           if (newPath)
             pathArray.push(newPath);
         }
-        filesObject[key] = pathArray;
+        key = _str.capitalize(key)
+        if (pathArray.length != 0)
+          filesObject[key] = pathArray;
       }
     }
     return filesObject;
@@ -134,10 +160,10 @@ exports.create = function (req, res) {
   // delete json.previous
 
   // get Others model
-  var Model = utils.getModel(json.form);
-  delete json.form
 
-  var others = _.omit(json, ["title", "comments", "tags", "type"]);
+  var Model = utils.getModel(json.type);
+
+  var others = _.omit(json, ["title", "comments", "tags", "type", "action", "createdAt"]);
 
   var files = saveFiles(req.files)
   others.files = files
@@ -185,14 +211,8 @@ exports.create = function (req, res) {
  */
 
 exports.edit = function (req, res) {
-  // res.render('techniques/edit', {
-  //   title: 'Edit '+req.technique.title,
-  //   technique: req.technique,
-  // })
 
   var technique = req.technique
-
-  console.log(technique)
 
   Form.load(technique.type, function (err, form) {
     if (err || !form)
@@ -212,27 +232,45 @@ exports.edit = function (req, res) {
  */
 
 exports.update = function(req, res){
+  var json = req.body
+
+  console.log(json)
+
   var technique = req.technique
   var util = require('util');
 
-  var newTechnique = _.omit(req.body, 'finished');
+  var newTechnique = _.omit(json, 'action');
   technique = _.extend(technique, newTechnique);
-  if (req.body.finished)
+  if (json.action == 'finish')
       technique = _.extend(technique, {'finishedAt' : Date.now()})
 
-  console.log(util.inspect(technique, false, null));
+  var Model = utils.getModel(json.type);
 
   technique.save(function(err) {
     if (err) {
-      console.log ("\n\n\n err : " + err + " \n\n\n")
-      res.render('techniques/edit', {
-        title: 'Edit Technique',
-        technique: technique,
-        errors: err.errors
-      })
+      if (err) return res.render('500', {error : err})
     }
     else {
-      res.redirect('/techniques/' + technique._id)
+
+      console.log("\n\nupdate technique")
+      console.log(technique)
+
+      var files = saveFiles(req.files)
+      
+      // add new files to existing files
+      for(key in technique.others.files) {
+        if (files[key])
+          utils.pushArray(files[key], technique.others.files[key])
+        else files[key] = technique.others.files[key]
+      }
+
+      var others = _.omit(json, ["title", "comments", "tags", "type", "action", "createdAt"]);
+      others.files = files;
+      
+      Model.update({_id : technique.others._id}, others, function(err, numberAffected, raw) {
+        if(err) console.log(err);
+        res.redirect('/phases/' + technique.phase + "/" + technique._id)
+      });
     }
   })
 }

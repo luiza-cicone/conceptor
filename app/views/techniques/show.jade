@@ -4,26 +4,44 @@ block main
   h1= technique.title
 
 block content
-  .row
-    .span9
-      p=technique.body
-      p.author
-        span Author :&nbsp;
-        span=technique.user.name
-      .date= formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
-      if (technique.tags)
-        .tags
-          | Tags :&nbsp;
-          each tag in technique.tags.split(',')
-            span.tag
-              i.icon-tags
-              |  #{tag}
-          
+  ul.breadcrumb
+    li
+      a(href="/processes") Processes
+    li
+      a(href="/phases/"  + phase._id) #{phase.name}
+    li.active #{technique.title}
+  p=technique.body
+  p.author
+    span Author :&nbsp;
+    span=technique.user.name
+  .date= 'Created at : ' + formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
+  if (technique.finishedAt)
+    .date= 'Finished at : ' + formatDate(technique.finishedAt, "%b %d, %Y at %I:%M %p")
+  if (technique.tags)
+    .tags
+      | Tags :&nbsp;
+      each tag in technique.tags.split(',')
+        span.tag
+          i.icon-tags
+          |  #{tag}
+  hr
+  - var o = technique.others
+  if o && o.files
+    each val, key in o.files
+      h4=key
+      each file in o.files[key]
+        - var filename = file.split('/')
+        - var index = filename.length - 1
+        i.icon-file
+        a(href=file) #{filename[index]}
+        br
+                  
   p
     br
     form.center.form-inline.confirm(action="/phases/"+phase._id+"/"+technique.id, method="post")
       input(type='hidden', name='_csrf', value="#{csrf_token}")
-      a.btn(href='/phases/'+phase._id+'/'+technique._id+'/edit/' + technique.type, title="edit") Edit
-      &nbsp;&nbsp;
+      if (!technique.finishedAt)
+        a.btn.btn-default(href='/phases/'+phase._id+'/'+technique._id+'/edit/' + technique.type, title="edit") Edit
+        &nbsp;&nbsp;
       input(type="hidden", name="_method", value="DELETE")
       button.btn.btn-danger(type="submit", value="delete") Delete

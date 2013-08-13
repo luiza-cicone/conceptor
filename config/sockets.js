@@ -1,7 +1,8 @@
 var socketio = require('socket.io')
 
-var phases = require('../app/controllers/phases')
+var processes = require('../app/controllers/processes')
 var forms = require('../app/controllers/forms')
+var techniques = require('../app/controllers/techniques')
 
 module.exports.listen = function(server){
 
@@ -10,19 +11,30 @@ module.exports.listen = function(server){
   io.sockets.on('connection', function(socket){
 
     socket.on('request technique', function (technique) {
+
+      console.log(technique)
+
       forms.json(technique.type, function(form) {
-        socket.emit('form data', form);
+
+        techniques.getOne(technique._id, function(technique){
+          socket.emit('form data', {form: form, technique:technique});
+        })
+
       })  
     });
-    socket.on('request graph', function () {
-      phases.json(function(techniquesJson, linksJson) {
+
+    socket.on('request graph', function (process) {
+      processes.json(process.id, function(techniquesJson, linksJson) {
         socket.emit('graph data', {nodes : techniquesJson, links : linksJson});
       }) 
     });
 
-  	socket.on('do close', function (data) {
-    	socket.disconnect();
-  	});
+    socket.on('request process graph', function (process) {
+      processes.schema(process.id, function(phases, links) {
+        socket.emit('process graph data', {nodes : phases, links : links});
+      }) 
+    });
+
   })
 
   return io

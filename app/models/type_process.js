@@ -35,7 +35,8 @@ var ProcessTypeSchema = new Schema({
   comments:  {type : String, default : '', trim : true},
   tags:      {type: [], get: getTags, set: setTags},
   image:     {type : String, default : '', trim : true},
-  phases:    {type : [Schema.Types.Mixed]}
+  phases:     [{type : Schema.ObjectId, ref : 'PhaseType'}],
+  links:     [{type : Schema.ObjectId, ref : 'PhaseLink'}]
 })
 
 /**
@@ -63,6 +64,8 @@ ProcessTypeSchema.statics = {
 
   load: function (id, cb) {
     this.findOne({ _id : id })
+      .populate({ path:'phases', options: { sort: {'order': 1}}})
+      .populate({ path:'links'})
       .exec(cb)
   },
 
