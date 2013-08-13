@@ -92,7 +92,7 @@ $(document).ready(function() {
 
   socket.on('graph data', function (data) {
     // var links = transformDataForD3(data);
-    
+    console.log(data.nodes)
     window.app.RenderGraph(data.nodes, data.links);
   });
 });

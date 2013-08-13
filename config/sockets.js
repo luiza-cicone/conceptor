@@ -24,9 +24,12 @@ module.exports.listen = function(server){
     });
 
     socket.on('request graph', function (process) {
-      processes.json(process.id, function(techniquesJson, linksJson) {
-        socket.emit('graph data', {nodes : techniquesJson, links : linksJson});
-      }) 
+      setInterval(function() {
+        console.log("do this");
+        processes.json(process.id, function(techniquesJson, linksJson) {
+          socket.emit('graph data', {nodes : techniquesJson, links : linksJson});
+        }) 
+      }, 1000);
     });
 
     socket.on('request process graph', function (process) {

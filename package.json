@@ -30,6 +30,7 @@
     , "passport-google-oauth": "latest"
     , "notifier": "latest"
     , "underscore": "latest"
+    , "underscore.string": "latest"
     , "gzippo": "latest"
     , "async": "latest"
     , "view-helpers": "latest"
