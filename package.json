@@ -3,7 +3,10 @@
   , "description": "express, jade, mongoose, d3 app"
   , "version": "1.0.0"
   , "private": false
-  , "author": "Luiza CICONE"
+  , "author": {
+      "name" : "Luiza CICONE",
+      "email" : "luiza.cicone@gmail.com"
+    }
   , "engines": {
         "node": "0.10.x"
       , "npm":  "1.2.x"

@@ -24,7 +24,6 @@ var env = process.env.NODE_ENV || 'development'
   , config = require('./config/config')[env]
   , auth = require('./config/middlewares/authorization')
   , mongoose = require('mongoose')
-  , db = require('mongodb')
 
 // Bootstrap db connection
 mongoose.connect(config.db)
