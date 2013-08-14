@@ -5,8 +5,9 @@ block main
   hr
   .list-group
   each phase in phases
-    h3=phase.name
+    h5=phase.name
     each technique in phase.techniques
       a.list-group-item(href="/processes/" + process_item._id +"/" + phase._id + "/new/" + technique.id)
         p.list-group-item-heading=technique.name
-    
+  br
+  br  

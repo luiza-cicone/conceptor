@@ -175,8 +175,6 @@ exports.create = function (req, res) {
   technique.phase = phase._id;
 
   Model.create(others, function(err, result) {
-    if(err) console.log(err);
-
     technique.others = result._id;
 
     technique.save(function (err) {
@@ -252,16 +250,16 @@ exports.update = function(req, res){
     }
     else {
 
-      console.log("\n\nupdate technique")
-      console.log(technique)
 
       var files = saveFiles(req.files)
       
-      // add new files to existing files
-      for(key in technique.others.files) {
-        if (files[key])
-          utils.pushArray(files[key], technique.others.files[key])
-        else files[key] = technique.others.files[key]
+      if (technique.others) {
+        // add new files to existing files
+        for(key in technique.others.files) {
+          if (files[key])
+            utils.pushArray(files[key], technique.others.files[key])
+          else files[key] = technique.others.files[key]
+        }
       }
 
       var others = _.omit(json, ["title", "comments", "tags", "type", "action", "createdAt"]);
