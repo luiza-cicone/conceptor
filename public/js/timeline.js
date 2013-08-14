@@ -59,7 +59,6 @@ function gcd(a, b) {
           tickTime: d3.time.days, 
           tickNumber: 1},
         colorCycle = d3.scale.category10(),
-        display = "rect",
         beginning = 0,
         ending = 0,
         margin = {left: 0, right: 0, top: -60, bottom: 0},
@@ -210,7 +209,11 @@ function gcd(a, b) {
               }
             });
 
-            var rect = elements.selectAll("svg").data(data).enter().append(display);
+            var rect = elements.selectAll("svg")
+              .data(data)
+              .enter()
+              .append("rect");
+              
             rect
               .attr('x', getXPos)
               .attr("y", getStackPosition)

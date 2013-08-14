@@ -14,7 +14,7 @@ var path = require('path')
 
 module.exports = {
   development: {
-    db: 'mongodb://localhost/conceptor_dev',
+    db: 'mongodb://luiza:X8h6d93Q@paulo.mongohq.com:10013/app17482425',
     root: rootPath,
     notifier: notifier,
     app: {
@@ -42,7 +42,7 @@ module.exports = {
     },
   },
   test: {
-    db: 'mongodb://localhost/conceptor_test',
+    db: 'mongodb://luiza:X8h6d93Q@paulo.mongohq.com:10013/app17482425',
     root: rootPath,
     notifier: notifier,
     app: {

@@ -1,28 +1,31 @@
 
 header#header
-  .navbar.navbar-fixed-top(role='navigation')
-    .container
+  nav.navbar.navbar-fixed-top(role='navigation')
+    .navbar-header
         button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-responsive-collapse')
+          span.sr-only Toggle navigation
           span.icon-bar
           span.icon-bar
           span.icon-bar
         a.navbar-brand(href='/') Conceptor
-        div.nav-collapse.collapse.navbar-responsive-collapse
-          ul.nav.navbar-nav
-            li
-              a(href='/admin', title="article listing") Admin
-            li
-              if (process_item)
-                a(href="/processes/" + process_item._id + "/new", title="New Technique") New
+
+      div.navbar-collapse.collapse.navbar-responsive-collapse
+        ul.nav.navbar-nav
+          li
+            a(href='/admin', title="article listing") Admin
+          li
+            if (process_item)
+              a(href="/processes/" + process_item._id + "/new", title="New Technique") New
               
            
 
-          ul.nav.navbar-nav.pull-right
-            if (req.isAuthenticated())
-              //
-                 li a(href="/users/"+req.user.id, title="Profile") Profile
-              li
-                button.btn.btn-default.navbar-btn(type='button', onClick="window.location='/logout' ") Logout
-            else
-              li
-                button.btn.btn-default.navbar-btn(type='button', onClick="window.location='/login' ") login
+        ul.nav.navbar-nav.navbar-right
+          if (req.isAuthenticated())
+            li
+              button.btn.btn-default.navbar-btn(type='button', onClick="window.location='/logout' ") Logout
+          else
+            li
+              button.btn.btn-default.navbar-btn(type='button', onClick="window.location='/login' ") login
+
+//
+  li a(href="/users/"+req.user.id, title="Profile") Profile

@@ -25,7 +25,6 @@ module.exports.listen = function(server){
 
     socket.on('request graph', function (process) {
       setInterval(function() {
-        console.log("do this");
         processes.json(process.id, function(techniquesJson, linksJson) {
           socket.emit('graph data', {nodes : techniquesJson, links : linksJson});
         }) 
