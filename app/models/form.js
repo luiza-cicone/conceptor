@@ -16,7 +16,8 @@ var FormSchema = new Schema({
   name: {type : String, default : '', trim : true},
   id : {type : String},
   description: {type : String, default : '', trim : true},
-  json: Schema.Types.Mixed
+  json: Schema.Types.Mixed,
+  json_second: Schema.Types.Mixed
 }, {id : false})
 
 /**

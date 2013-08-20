@@ -8,15 +8,17 @@ block content
     li
       a(href="/processes") Processes
     li
-      a(href="/phases/"  + phase._id) #{phase.name}
+      a(href="/processes"+process_item._id) #{process_item.name}
+    li
+      a(href='/processes/'+process_item._id+'/'+ phase._id) #{phase.name}
     li.active #{technique.title}
   p=technique.body
   p.author
     span Author :&nbsp;
     span=technique.user.name
-  .date= 'Created at : ' + formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
+  p.date= 'Created at : ' + formatDate(technique.createdAt, "%b %d, %Y at %I:%M %p")
   if (technique.finishedAt)
-    .date= 'Finished at : ' + formatDate(technique.finishedAt, "%b %d, %Y at %I:%M %p")
+    p.date= 'Finished at : ' + formatDate(technique.finishedAt, "%b %d, %Y at %I:%M %p")
   if (technique.tags)
     .tags
       | Tags :&nbsp;
@@ -38,10 +40,10 @@ block content
                   
   p
     br
-    form.center.form-inline.confirm(action="/phases/"+phase._id+"/"+technique.id, method="post")
+    form.center.form-inline.confirm(action='/processes/'+process_item._id+'/'+phase._id+"/"+technique.id, method="post")
       input(type='hidden', name='_csrf', value="#{csrf_token}")
       if (!technique.finishedAt)
-        a.btn.btn-default(href='/phases/'+phase._id+'/'+technique._id+'/edit/' + technique.type, title="edit") Edit
+        a.btn.btn-default(href='/processes/'+process_item._id+'/'+phase._id+'/'+technique._id+'/' + technique.type + '/edit', title="edit") Edit
         &nbsp;&nbsp;
       input(type="hidden", name="_method", value="DELETE")
       button.btn.btn-danger(type="submit", value="delete") Delete

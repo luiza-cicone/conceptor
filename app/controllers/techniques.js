@@ -41,7 +41,8 @@ exports.show = function(req, res){
   res.render('techniques/show', {
     title: req.technique.title,
     technique: req.technique,
-    phase: req.phase
+    phase: req.phase,
+    process_item: req.process_item
   })
 }
 
@@ -109,15 +110,48 @@ exports.newType = function(req, res){
       return res.render('500', {error : "Failed to load form."})
 
     var technique = new Technique({}) 
-    technique.createdAt = Date.now
 
-    res.render('form', {
+    res.render('init', {
       title: 'New ' + form.name,
       form: form,
       technique: technique,
-      phase: req.phase
+      phase: req.phase,
+      process_item: req.process_item
     });
   })
+}
+
+exports.createFirst = function(req, res){
+
+  console.log("start type")
+
+  var type = req.params.type
+
+  var technique = new Technique(req.body) 
+  technique.user = req.user
+
+  technique.save(function (err) {
+    if (err)  {
+        console.log("error in startType")
+        return res.render('500', {error : err})
+    }
+    res.redirect('processes/'+ req.process_item._id+'/'+req.phase._id+'/'+technique._id+'/'+type+'/2')
+  })
+}
+
+
+exports.startType = function(req, res){
+
+  form = req.type;
+
+  res.render('form', {
+    title: 'New ' + form.name,
+    form: form,
+    technique: req.technique,
+    phase: req.phase,
+    process_item: req.process_item,
+    start : true
+  });
 }
 
 function saveFiles(files, cb) {
@@ -167,9 +201,13 @@ exports.create = function (req, res) {
 
   var files = saveFiles(req.files)
   others.files = files
+  
+  var technique = req.technique
 
-  var technique = new Technique(json)
-  technique.user = req.user
+  console.log("technique in request");
+  console.log(technique)
+
+  technique = _.extend(technique, json);
 
   var phase = req.phase
   technique.phase = phase._id;
@@ -220,7 +258,8 @@ exports.edit = function (req, res) {
       title: 'Edit Technique',
       form: form,
       technique: technique,
-      phase: req.phase
+      phase: req.phase,
+      process_item: req.process_item
     });
   })
 }
@@ -237,8 +276,7 @@ exports.update = function(req, res){
   var technique = req.technique
   var util = require('util');
 
-  var newTechnique = _.omit(json, 'action');
-  technique = _.extend(technique, newTechnique);
+  technique = _.extend(technique, json);
   if (json.action == 'finish')
       technique = _.extend(technique, {'finishedAt' : Date.now()})
 
@@ -249,8 +287,6 @@ exports.update = function(req, res){
       if (err) return res.render('500', {error : err})
     }
     else {
-
-
       var files = saveFiles(req.files)
       
       if (technique.others) {
@@ -260,15 +296,16 @@ exports.update = function(req, res){
             utils.pushArray(files[key], technique.others.files[key])
           else files[key] = technique.others.files[key]
         }
-      }
-
-      var others = _.omit(json, ["title", "comments", "tags", "type", "action", "createdAt"]);
-      others.files = files;
       
-      Model.update({_id : technique.others._id}, others, function(err, numberAffected, raw) {
-        if(err) console.log(err);
-        res.redirect('/phases/' + technique.phase + "/" + technique._id)
-      });
+
+        var others = _.omit(json, ["title", "comments", "tags", "type", "action", "createdAt"]);
+        others.files = files;
+        
+        Model.update({_id : technique.others._id}, others, function(err, numberAffected, raw) {
+          if(err) console.log(err);
+          res.redirect('/processes/' + req.process_item._id+'/' + req.phase._id + "/" + technique._id)
+        });
+      } else res.redirect('/processes/' + req.process_item._id+'/' + req.phase._id + "/" + technique._id)
     }
   })
 }

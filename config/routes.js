@@ -61,11 +61,14 @@ module.exports = function (app, passport, auth) {
   app.get   ('/phases/:phase_id', phases.show)
 
   app.get   ('/processes/:process_id/new', auth.requiresLogin, techniques.new)
-  app.get   ('/processes/:process_id/:phase_id/new/:type', auth.requiresLogin, techniques.newType)
-  app.post  ('/phases/:phase_id', auth.requiresLogin, techniques.create)
+  app.get   ('/processes/:process_id/:phase_id/new/:type/1', auth.requiresLogin, techniques.newType)
+  app.post   ('/processes/:process_id/:phase_id/new/:type/2', auth.requiresLogin, techniques.createFirst)
+  app.get   ('/processes/:process_id/:phase_id/:technique_id/:type/2', auth.requiresLogin, techniques.startType)
+  app.post  ('/processes/:process_id/:phase_id/:technique_id', auth.requiresLogin, techniques.create)
+  app.put   ('/processes/:process_id/:phase_id/:technique_id', auth.requiresLogin, techniques.update)
 
-  app.get   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.show)
-  app.get   ('/phases/:phase_id/:technique_id/edit/:type', auth.requiresLogin, techniques.edit)
+  app.get   ('/processes/:process_id/:phase_id/:technique_id', auth.requiresLogin, techniques.show)
+  app.get   ('/processes/:process_id/:phase_id/:technique_id/:type/edit', auth.requiresLogin, techniques.edit)
   app.put   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.update)
   app.del   ('/phases/:phase_id/:technique_id', auth.requiresLogin, techniques.destroy)
 

@@ -90,3 +90,18 @@ text.shadow {
   stroke-width: 2px;
   stroke-opacity: .7;
 }
+  
+.ui-progressbar {
+    position: relative;
+  }
+.progress-label {
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    font-weight: bold;
+    font-size: 9px;
+    text-shadow: 1px 1px 0 #fff;
+  }
+.elapsed{
+  text-align: right;
+}

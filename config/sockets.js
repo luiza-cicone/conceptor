@@ -12,7 +12,7 @@ module.exports.listen = function(server){
 
     socket.on('request technique', function (technique) {
 
-      console.log(technique)
+      console.log("\n\n\nrequest technique")
 
       forms.json(technique.type, function(form) {
 

@@ -40,6 +40,8 @@ var TechniqueSchema = new Schema({
   phase: {type : Schema.ObjectId, ref : 'Phase'},
   type: {type : String, default : '', trim : true},
   user: {type : Schema.ObjectId, ref : 'User'},
+  estimatedTime: {type: Number},
+  elapsedTime:{type:Number},
   others: {type : Schema.Types.ObjectId}
 })
 

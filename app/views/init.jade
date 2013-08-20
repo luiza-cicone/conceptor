@@ -1,0 +1,18 @@
+extends layouts/default_form
+
+block main
+  h1 #{title}
+  hr
+
+block content
+  - var action = '/processes/'+process_item._id+'/'+phase._id+'/new/' + form.id + '/2'
+
+  form.form-horizontal(method="post", action=action, enctype="multipart/form-data")
+    input(type='hidden', name='_csrf', value="#{csrf_token}")
+    input(type='hidden', name='type', value=form.id)
+
+    .form-actions.pull-right
+      a.btn.btn-link(href='/processes/' +process_item._id+'/'+ phase._id, title="cancel") Cancel
+      &nbsp;
+      button.btn.btn-success(type='submit', name='action', value='start') Start
+

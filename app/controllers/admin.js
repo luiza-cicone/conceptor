@@ -84,7 +84,8 @@ exports.show = function(req, res){
   res.render('admin/show_technique', {
     title: req.type.name,
     technique: req.type,
-    jsonText: JSON.stringify(req.type.json, null, 2)
+    json: JSON.stringify(req.type.json, null, 2),
+    json_second: JSON.stringify(req.type.json_second, null, 2)
   })
 }
 
@@ -104,6 +105,7 @@ exports.modifyTechnique = function (req, res) {
     technique = _.extend(technique, req.body)
 
     technique.json = JSON.parse(technique.json);
+    technique.json_second = JSON.parse(technique.json_second);
 
     technique.save(function (err) {
       if (err) {

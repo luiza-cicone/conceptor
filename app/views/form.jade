@@ -5,17 +5,18 @@ block main
   hr
 
 block content
-  - var action 
-  if (technique.isNew)
-    action = '/phases/'+phase._id
-  else 
-    action = '/phases/'+phase._id+'/' + technique._id
+  - var action = '/processes/'+process_item._id+'/'+phase._id+'/'+technique._id
+
+  .example
+    #progress
+      .elapsed
+      .pbar
+        .progress-label 0%
+  br
 
   form.form-horizontal(method="post", action=action, enctype="multipart/form-data")
-    if (!technique.isNew)
+    if (!start)
       input(type="hidden", name="_method", value="PUT")
-    else
-      input(type='hidden', name='createdAt', value=technique.createdAt)
     input(type='hidden', name='_csrf', value="#{csrf_token}")
     input(type='hidden', name='type', value=form.id)
 
@@ -33,7 +34,7 @@ block content
               br
 
     .form-actions.pull-right
-      a.btn.btn-link(href='/phases/' + phase._id, title="cancel") Cancel
+      a.btn.btn-link(href='/processes/' +process_item._id+'/'+ phase._id+'/'+technique._id, title="cancel") Cancel
       &nbsp;
       button.btn.btn-success(type='submit', name='action', value='save') Save and Pause
       &nbsp;

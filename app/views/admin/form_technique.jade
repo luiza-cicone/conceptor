@@ -22,9 +22,14 @@ block content
         input#id.form-control(type='text', name="id", class="alphanumeric", value=technique.id)
 
     .form-group
-      label.control-label.col-lg-2(for='json') JSON
+      label.control-label.col-lg-2(for='json') First Page JSON
       .col-lg-10
-        textarea#json.form-control(type='text', rows='10', name="json")=jsonText
+        textarea#json.form-control(type='text', rows='10', name="json")=json
+
+    .form-group
+      label.control-label.col-lg-2(for='json_second') Second Page JSON
+      .col-lg-10
+        textarea#json_second.form-control(type='text', rows='10', name="json_second")=json_second
 
     .form-actions.pull-right
       button.btn.btn-success(type='submit', name='action', value='save') Save

@@ -15,6 +15,6 @@ var mongoose = require('mongoose')
 exports.json = function(name, cb){
   Form.load(name, function (err, form) {
     if (!form) return new Error('Failed to load form ' + name)
-    cb(form.json);
+    cb(form);
   })
 }
