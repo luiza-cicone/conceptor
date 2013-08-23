@@ -61,10 +61,10 @@ function click()
 
 // The the HTML document's DOM tree is ready
 $(document).ready(function() {
-  var i = 0;
-  var socket = io.connect('http://localhost:1234');
-
   var path = window.location.pathname.split('/');
+
+  var socket = io.connect('http://'+path[0]+':1234');
+
   socket.emit('request graph', {id : path[path.length - 2 ]});
 
   socket.on('graph data', function (data) {

@@ -116,8 +116,8 @@ window.app.RenderGraph = function (nodes, links) {
 }
 
 $(document).ready(function() {
-    
-  var socket = io.connect('http://localhost:1234');
+  var path = window.location.pathname.split('/');
+  var socket = io.connect('http://'+path[0]+':1234');
 
   socket.emit('request process graph', {id : "51dc1113ff3ba72edc000001"});
 
