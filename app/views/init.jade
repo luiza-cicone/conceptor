@@ -7,6 +7,10 @@ block main
 block content
   - var action = '/processes/'+process_item._id+'/'+phase._id+'/new/' + form.id + '/2'
 
+  //
+    .col-lg-offset-2.col-lg-10
+  pre #{form.description}
+
   form.form-horizontal(method="post", action=action, enctype="multipart/form-data")
     input(type='hidden', name='_csrf', value="#{csrf_token}")
     input(type='hidden', name='type', value=form.id)

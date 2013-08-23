@@ -99,10 +99,11 @@ exports.modifyTechnique = function (req, res) {
 
   var technique = req.type
 
-  console.log(action)
 
   if (action == 'save') {
     technique = _.extend(technique, req.body)
+
+  console.log(technique)
 
     technique.json = JSON.parse(technique.json);
     technique.json_second = JSON.parse(technique.json_second);

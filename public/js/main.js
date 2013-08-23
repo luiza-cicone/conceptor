@@ -4,7 +4,7 @@ window.app = {}
 
 
 // //The function in charge of drawing the interactive graph'.
-window.app.RenderGraph = function (nodes, links) {
+window.app.RenderGraph = function (process, nodes, links) {
 
   var width = $("#canvas").width()*.99;
 
@@ -19,16 +19,22 @@ window.app.RenderGraph = function (nodes, links) {
           $('#id' + d._id).tooltip('show')
         })
         .click(function (d, i, datum) {
-          window.open('/phases/' + datum._id + '/' + d._id, '_self');
+          window.open('/processes/' + process+ '/' + datum._id + '/' + d._id, '_self');
         })
         .scroll(function (x, scale) {
         });
+
   var svg = d3.select("#canvas")
       .append("svg")
       .attr("width", width)
       .datum({nodes : nodes, links : links})
-      .call(chart);
+      .call(chart)
+      .on("click", click)
 
+function click() 
+{
+    console.log("lala"); //considering dot has a title attribute
+}
 
   svg.append("svg:defs").append("svg:marker")
       .attr("id", "marker")
@@ -49,7 +55,6 @@ window.app.RenderGraph = function (nodes, links) {
 
 }
 
-
   function update(nodes, links){
     console.log("TODO : must update");
   }
@@ -63,11 +68,11 @@ $(document).ready(function() {
   socket.emit('request graph', {id : path[path.length - 2 ]});
 
   socket.on('graph data', function (data) {
-    if (i == 0) {
-      window.app.RenderGraph(data.nodes, data.links);
-    }
-    else
-      update(data.nodes, data.links)
-    i++;
+    // if (i == 0) {
+      window.app.RenderGraph(path[path.length - 2], data.nodes, data.links);
+    // }
+    // else
+      // update(data.nodes, data.links)
+    // i++;
   });
 });

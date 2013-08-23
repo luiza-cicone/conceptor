@@ -22,6 +22,11 @@ block content
         input#id.form-control(type='text', name="id", class="alphanumeric", value=technique.id)
 
     .form-group
+      label.control-label.col-lg-2(for='description') Description
+      .col-lg-10
+        textarea#description.form-control(type='text', rows='10', name="description")=technique.description
+
+    .form-group
       label.control-label.col-lg-2(for='json') First Page JSON
       .col-lg-10
         textarea#json.form-control(type='text', rows='10', name="json")=json
