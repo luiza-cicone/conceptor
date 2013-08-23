@@ -775,7 +775,6 @@ jsonform.elementTypes = {
         // Insert a "draggable" icon
         // floating to the left of the main element
         return '<li class="list-group-item" data-idx="<%= node.childPos %>">' +
-          '<span class="draggable line"><i class="icon-list" title="Move item"></i></span>' +
           inner +
           '</li>';
       }
