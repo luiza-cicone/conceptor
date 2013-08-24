@@ -1,16 +1,16 @@
 extends ../layouts/default
 
 block main
-  h1 Techniques for #{phase.name}
+  h1 #{title}
 
 block content
   ul.breadcrumb
     li
-      a(href="/processes") Processes
+      a(href="/processes") Projects
     if(process_item)
       li
         a(href="/processes/" + process_item._id) #{process_item.name}
-    li.active #{phase.name}
+    li.active #{title}
 
   each technique in techniques
     .technique

@@ -1,0 +1,51 @@
+extends ../layouts/default
+
+block content
+  - var action
+  - var action = '/admin/processes'
+  if (!process_item.isNew)
+    - action += '/' + process_item._id
+
+  form.form-horizontal.confirm(method="post", action=action, enctype="multipart/form-data")
+    input(type='hidden', name='_csrf', value="#{csrf_token}")
+    if (!process_item.isNew)
+      input(type="hidden", name="_method", value="PUT")
+
+    .form-group
+      label.control-label.col-lg-2(for='title') Name
+      .col-lg-10
+        input#title.form-control(type='text', name="name", value=process_item.name)
+
+    .form-group
+      label.control-label.col-lg-2(for='desc') Comments
+      .col-lg-10
+        textarea#desc.form-control(type='text', rows='7', name="comments")=process_item.comments
+
+    .form-group
+      label.control-label.col-lg-2(for='tags') Tags
+      .col-lg-10
+        input#tags.form-control(type='text', name="tags", value=process_item.tags, placeholder='Enter the tags')
+
+    - default_phases.forEach(function(default_phase) {
+      - var check = false
+      - process_item.phases.forEach(function(phase) {
+        - if(JSON.stringify(default_phase._id) == JSON.stringify(phase._id)) {
+          - check = true
+        - }
+      - });
+
+      .checkbox
+        label
+          input(type='checkbox', value=default_phase._id, name='phases', checked=check)
+          | #{default_phase.name}
+    - });
+
+    .form-actions.pull-right
+      button.btn.btn-success(type='submit', name='action', value='save') Save
+      &nbsp;
+      a.btn.btn-default(href="/admin/processes", title="cancel") Cancel
+      if (!process_item.isNew)
+        &nbsp;
+        button.btn.btn-danger(type='submit', name='action', value='delete') Delete
+
+

@@ -3,10 +3,10 @@
   View which shows the details of a process (default or user) based on the value #{concrete}
   ------------------
 
-extends ../layouts/default_d3
+extends ../layouts/default
 
 block main
-  h1 #{process_item.name}
+  h1 #{title}
     if (concrete)
       a.btn.btn-info.pull-right(href='/processes/' + process_item._id + '/main') Graph
     else
@@ -17,7 +17,7 @@ block content
   ul.breadcrumb
     li
       a(href="/processes") Projects
-    li.active #{process_item.name}
+    li.active #{title}
 
   p
     - var text = process_item.comments;

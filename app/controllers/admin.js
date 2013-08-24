@@ -98,8 +98,7 @@ exports.modifyTechnique = function (req, res) {
   delete req.body.action
 
   var technique = req.type
-
-
+  
   if (action == 'save') {
     technique = _.extend(technique, req.body)
 

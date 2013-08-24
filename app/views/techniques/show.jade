@@ -1,17 +1,18 @@
 extends ../layouts/default
 
 block main
-  h1= technique.title
+  h1 #{title}
 
 block content
   ul.breadcrumb
     li
-      a(href="/processes") Processes
+      a(href="/processes") Projects
     li
       a(href="/processes"+process_item._id) #{process_item.name}
     li
       a(href='/processes/'+process_item._id+'/'+ phase._id) #{phase.name}
-    li.active #{technique.title}
+    li.active #{title}
+    
   p=technique.body
   p.author
     span Author :&nbsp;

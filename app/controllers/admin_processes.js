@@ -9,6 +9,7 @@ var mongoose = require('mongoose')
   , Process = mongoose.model('ProcessType')
   , ConcreteProcess = mongoose.model('Process')
   , _ = require('underscore')
+  , ProcessType = mongoose.model('ProcessType')
 
 /*
  * Home
@@ -27,7 +28,7 @@ exports.list = function(req, res) {
       return res.render('500', {error : err.errors || err})
 
       res.render('admin/list_processes', {
-        title : "Processes",
+        title : "Projects",
         processes : processes,
         concrete : 1
       })
@@ -45,7 +46,7 @@ exports.listAll = function(req, res) {
       return res.render('500', {error : err.errors || err})
 
       res.render('admin/list_processes', {
-        title : "Choose a base process",
+        title : "New project",
         processes : processes
       })
 
@@ -87,6 +88,7 @@ exports.process = function(req, res, next, id){
 exports.showOne = function(req, res) {
   
   res.render('admin/show_process', {
+    title : req.process_item.name,
     concrete : req.concrete,
     process_item : req.process_item
   })
@@ -132,8 +134,6 @@ exports.create = function(req, res) {
         phasesID.push(arguments[i]._id);
       concreteProcess = _.extend(concreteProcess, {phases : phasesID});
 
-      console.log("\n\n\nconcreteProcess");
-      console.log(concreteProcess);
       concreteProcess.save(function(err) {
         if (err) return res.render('500', {error : err});
       });
@@ -181,4 +181,109 @@ exports.insertA = function(req, res) {
 
   // })
 
+}
+
+
+
+
+
+
+
+/**
+
+
+Processes
+
+
+*/
+
+
+exports.processes = function(req, res){
+  ProcessType.list(function(err, techniques) {
+    if (err) return res.render('500', {error : err.errors || err})
+    res.render('admin/processes', {
+      processes: techniques,
+    })
+  })
+}
+
+/**
+ * New type of technique
+ */
+
+exports.newDefaultProcess = function(req, res){  
+  Phase.list(function(err, phases) {
+    if (err) return res.render('500', {error : err.errors || err})
+    res.render('admin/new_default_process', {
+      title: 'New process',
+      process_item: new ProcessType({}),
+      default_phases : phases
+    })
+  })
+}
+
+/**
+ * Create a type of technique
+ */
+
+exports.createDefaultProcess = function (req, res) {
+  var technique = new ProcessType(req.body)
+
+  technique.save(function (err) {
+    if (err) {
+      res.render('admin/processes', {
+        title : "Processes",
+        processes : processes
+      })
+    }
+    else {
+      res.redirect('admin/processes/')
+    }
+  })
+}
+
+/**
+ * Update technique
+ */
+
+
+exports.editDefaultProcess = function(req, res){
+  Phase.list(function(err, phases) {
+    if (err) return res.render('500', {error : err.errors || err})
+     res.render('admin/edit_default_process', {
+      title: req.process_item,
+      process_item: req.process_item,
+      default_phases : phases
+    })
+  })
+}
+
+
+exports.modifyDefaultProcess = function (req, res) {  
+  var action = req.body.action
+  delete req.body.action
+
+  var technique = req.process_item
+  
+  if (action == 'save') {
+    technique = _.extend(technique, req.body)
+
+    technique.save(function (err) {
+      if (err) {
+        res.render('admin/processes', {
+          technique: technique,
+          errors: err.errors
+        })
+      }
+      else {
+        res.redirect('admin/processes/')
+      }
+    })
+  }
+  else {
+    technique.remove(function(err){
+      // req.flash('notice', 'Deleted successfully')
+      res.redirect('/admin/processes/')
+    })
+  }
 }

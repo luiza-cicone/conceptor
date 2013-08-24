@@ -40,6 +40,12 @@ module.exports = function (app, passport, auth) {
   // app.get('/admin/processes/insert', auth.requiresLogin, admin_processes.insertA)
   // app.get('/admin/phases/insert', auth.requiresLogin, admin_phases.insert)
 
+  app.get('/admin/processes', auth.requiresLogin, admin_processes.processes)
+  app.get('/admin/processes/new', auth.requiresLogin, admin_processes.newDefaultProcess)
+  app.get('/admin/processes/:default_process_id', auth.requiresLogin, admin_processes.editDefaultProcess)
+  app.post('/admin/processes', auth.requiresLogin, admin_processes.createDefaultProcess)
+  app.put('/admin/processes/:default_process_id', auth.requiresLogin, admin_processes.modifyDefaultProcess)
+
   app.get('/admin/techniques', auth.requiresLogin, admin.techniques)
   app.get('/admin/techniques/new', auth.requiresLogin, admin.newTechnique)
   app.put('/admin/techniques/:type', auth.requiresLogin, admin.modifyTechnique)
