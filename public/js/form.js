@@ -2,13 +2,9 @@ $(document).ready(function () {
   var path = window.location.pathname.split('/');
   var socket = io.connect('http://'+path[0]+':1234');
 
-  var path = window.location.pathname.split('/');
-
   socket.emit('request technique', {_id: path[path.length - 3], type : path[path.length - 2]});
   var part = path[path.length - 1];
   socket.on('form data', function (data) {
-
-    console.log(data);
 
     // get attributes from others object into the technique object itself
 

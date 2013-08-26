@@ -11,6 +11,13 @@ module.exports = function (app, config, passport) {
 
   var server = require('http').createServer(app)
     , io = require('./sockets').listen(server);
+  
+
+  // assuming io is the Socket.IO server object
+  io.configure(function () { 
+    io.set("transports", ["xhr-polling"]); 
+    io.set("polling duration", 10); 
+  });
 
   server.listen(1234);
 
