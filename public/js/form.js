@@ -1,5 +1,6 @@
 $(document).ready(function () {
-  var socket = io.connect('http://localhost:1234');
+  var path = window.location.pathname.split('/');
+  var socket = io.connect('http://'+path[0]+':1234');
 
   var path = window.location.pathname.split('/');
 
