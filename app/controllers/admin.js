@@ -34,7 +34,10 @@ exports.newTechnique = function(req, res){
 exports.createTechnique = function (req, res) {
   var technique = new Form(req.body)
 
-  technique.json = JSON.parse(technique.json);
+  if (technique.json)
+    technique.json = JSON.parse(technique.json);
+  if (technique.json_second)
+    technique.json_second = JSON.parse(technique.json_second);
 
   technique.save(function (err) {
     if (err) {
@@ -103,8 +106,9 @@ exports.modifyTechnique = function (req, res) {
     technique = _.extend(technique, req.body)
 
   console.log(technique)
-
+  if (technique.json)
     technique.json = JSON.parse(technique.json);
+  if (technique.json_second)
     technique.json_second = JSON.parse(technique.json_second);
 
     technique.save(function (err) {
